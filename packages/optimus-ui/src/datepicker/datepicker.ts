@@ -3633,7 +3633,17 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
         if (this.keepInvalid) {
             return true; // If we are keeping invalid dates, we don't need to check for time constraints
         }
-        return (!this.minDate || selectedDate >= this.minDate) && (!this.maxDate || selectedDate <= this.maxDate);
+        if (this.showTime) {
+            // compare both date and time
+            return (!this.minDate || selectedDate >= this.minDate) && (!this.maxDate || selectedDate <= this.maxDate);
+        }
+        // compare only dates
+        let selectedDateWithoutTime = this.getDateWithoutTime(selectedDate);
+        return (!this.minDate || this.getDateWithoutTime(this.minDate) <= selectedDateWithoutTime) && (!this.maxDate || selectedDateWithoutTime <= this.getDateWithoutTime(this.maxDate));
+    }
+
+    getDateWithoutTime(date: Date): Date {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
     onTodayButtonClick(event: any) {
