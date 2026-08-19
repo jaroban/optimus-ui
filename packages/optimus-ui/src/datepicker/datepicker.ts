@@ -3630,7 +3630,7 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
     }
 
     isValidDateForTimeConstraints(selectedDate: Date) {
-        if (this.keepInvalid) {
+        if (!selectedDate || !isDate(selectedDate) || this.keepInvalid) {
             return true; // If we are keeping invalid dates, we don't need to check for time constraints
         }
         if (this.showTime || this.timeOnly) {
