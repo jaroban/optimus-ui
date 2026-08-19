@@ -3814,9 +3814,7 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
             try {
                 this.value = this.parseValueFromString(this.value);
             } catch {
-                if (this.keepInvalid) {
-                    this.value = value;
-                }
+                this.value = this.keepInvalid ? value : null;
             }
         }
 
