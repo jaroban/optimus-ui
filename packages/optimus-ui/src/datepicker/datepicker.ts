@@ -2791,29 +2791,35 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
                 value = this.value[this.value.length - 1];
             }
         }
+
         const valueDateString = value && isDate(value) ? value.toDateString() : null;
-        let isMinDate = this.minDate && valueDateString && this.minDate.toDateString() === valueDateString;
-        let isMaxDate = this.maxDate && valueDateString && this.maxDate.toDateString() === valueDateString;
+        if (!valueDateString) return;
 
-        if (isMinDate && this.currentHour24! < this.minDate!.getHours()) {
-            this.currentHour24 = this.minDate!.getHours();
-
-            if (this.currentMinute! < this.minDate!.getMinutes()) {
+        if (this.minDate && this.minDate.toDateString() === valueDateString) {
+            if (this.currentHour24! < this.minDate!.getHours()) {
+                this.currentHour24 = this.minDate!.getHours();
                 this.currentMinute = this.minDate!.getMinutes();
-
-                if (this.currentSecond! < this.minDate!.getSeconds()) {
+                this.currentSecond = this.minDate!.getSeconds();
+            } else if (this.currentHour24 === this.minDate!.getHours()) {
+                if (this.currentMinute! < this.minDate!.getMinutes()) {
+                    this.currentMinute = this.minDate!.getMinutes();
+                    this.currentSecond = this.minDate!.getSeconds();
+                } else if (this.currentMinute === this.minDate!.getMinutes() && this.currentSecond! < this.minDate!.getSeconds()) {
                     this.currentSecond = this.minDate!.getSeconds();
                 }
             }
         }
 
-        if (isMaxDate && this.currentHour24! > this.maxDate!.getHours()) {
-            this.currentHour24 = this.maxDate!.getHours();
-
-            if (this.currentMinute! > this.maxDate!.getMinutes()) {
+        if (this.maxDate && this.maxDate.toDateString() === valueDateString) {
+            if (this.currentHour24! > this.maxDate!.getHours()) {
+                this.currentHour24 = this.maxDate!.getHours();
                 this.currentMinute = this.maxDate!.getMinutes();
-
-                if (this.currentSecond! > this.maxDate!.getSeconds()) {
+                this.currentSecond = this.maxDate!.getSeconds();
+            } else if (this.currentHour24 === this.maxDate!.getHours()) {
+                if (this.currentMinute! > this.maxDate!.getMinutes()) {
+                    this.currentMinute = this.maxDate!.getMinutes();
+                    this.currentSecond = this.maxDate!.getSeconds();
+                } else if (this.currentMinute === this.maxDate!.getMinutes() && this.currentSecond! > this.maxDate!.getSeconds()) {
                     this.currentSecond = this.maxDate!.getSeconds();
                 }
             }
