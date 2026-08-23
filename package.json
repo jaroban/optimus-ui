@@ -1,6 +1,6 @@
 {
     "name": "@openng/optimus-ui-monorepo",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "author": "OpenNg",
     "homepage": "https://www.openng.org/",
     "repository": {
@@ -34,7 +34,8 @@
         "lint:fix": "eslint --fix --ext \".js,.mjs,.ts,.mts\" --ignore-path .gitignore .",
         "test:unit": "pnpm run build:optimus-ui && pnpm --filter @openng/optimus-ui test:unit",
         "test:vitest": "pnpm run build:optimus-ui && pnpm --filter @openng/optimus-ui test:vitest",
-        "test:coverage": "pnpm run build:optimus-ui && pnpm --filter @openng/optimus-ui test:unit --code-coverage"
+        "test:coverage": "pnpm run build:optimus-ui && pnpm --filter @openng/optimus-ui test:unit --code-coverage",
+        "test:styled": "pnpm --filter @openng/optimus-ui-utils build && pnpm --filter @openng/optimus-ui-styled test"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "catalog:angular22",
@@ -66,7 +67,7 @@
         "eslint": "^9.14.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-jsdoc": "^64.2.0",
+        "eslint-plugin-jsdoc": "^64.2.1",
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-prettier": "^5.5.6",
         "fs-extra": "^11.4.0",
