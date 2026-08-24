@@ -1304,7 +1304,6 @@ export class Listbox extends BaseEditableHolder<ListBoxPassThrough> {
 
                 if (!metaKey && isPrintableCharacter(event.key)) {
                     this.searchOptions(event, event.key);
-                    event.preventDefault();
                 }
 
                 break;
