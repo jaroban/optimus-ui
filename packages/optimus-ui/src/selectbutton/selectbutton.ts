@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-    AfterContentInit,
     AfterViewChecked,
     booleanAttribute,
     ChangeDetectionStrategy,
@@ -53,6 +52,7 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
                 [ngModel]="isSelected(option)"
                 [onLabel]="this.getOptionLabel(option)"
                 [offLabel]="this.getOptionLabel(option)"
+                [ariaLabel]="this.getOptionLabel(option)"
                 [disabled]="$disabled() || isOptionDisabled(option)"
                 (onChange)="onOptionSelect($event, option, i)"
                 [allowEmpty]="getAllowEmpty()"
