@@ -220,7 +220,6 @@ export class StepItem extends BaseComponent<StepItemPassThrough> {
     encapsulation: ViewEncapsulation.None,
     host: {
         '[class]': 'cx("root")',
-        '[attr.aria-current]': 'active() ? "step" : undefined',
         '[attr.role]': '"tab"',
         '[attr.data-p-active]': 'active()',
         '[attr.aria-selected]': 'active()',
