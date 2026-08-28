@@ -40,13 +40,25 @@ export interface InputNumberDataAdapter<T> {
     isLessThan: (value: T, other: T) => boolean;
 }
 
-const DEFAULT_INPUTNUMBER_DATA_ADAPTER: InputNumberDataAdapter<number> = {
+export const INPUTNUMBER_DATA_ADAPTER_NUMBER: InputNumberDataAdapter<number> = {
     fromString: (value: string) => {
         const parsedValue = parseFloat(value);
         return isNaN(parsedValue) ? null : parsedValue;
     },
     toString: (value: number | null) => (value != null ? value.toString() : ''),
     isLessThan: (value: number, other: number) => value < other
+};
+
+export const INPUTNUMBER_DATA_ADAPTER_BIGINT: InputNumberDataAdapter<bigint> = {
+    fromString: (value: string) => {
+        try {
+            return BigInt(value);
+        } catch {
+            return null;
+        }
+    },
+    toString: (value: bigint | null) => (value != null ? value.toString() : ''),
+    isLessThan: (value: bigint, other: bigint) => value < other
 };
 
 const INPUTNUMBER_INSTANCE = new InjectionToken<InputNumber>('INPUTNUMBER_INSTANCE');
@@ -395,7 +407,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
      * Custom data adapter for parsing and formatting the input value.
      * @group Props
      */
-    @Input() dataAdapter: InputNumberDataAdapter<any> = DEFAULT_INPUTNUMBER_DATA_ADAPTER;
+    @Input() dataAdapter: InputNumberDataAdapter<any> = INPUTNUMBER_DATA_ADAPTER_NUMBER;
     /**
      * Callback to invoke on input.
      * @param {InputNumberInputEvent} event - Custom input event.
