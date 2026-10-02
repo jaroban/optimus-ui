@@ -1,0 +1,106 @@
+@if (loading && loadingMode === 'mask') {
+<div [class]="cx('mask')" [pBind]="ptm('mask')" animate.enter="p-overlay-mask-enter-active" animate.leave="p-overlay-mask-leave-active">
+    @if (loadingIcon) {
+    <i [class]="cn(cx('loadingIcon'), 'pi-spin' + loadingIcon)" [pBind]="ptm('loadingIcon')"></i>
+    } @if (!loadingIcon) { @if (!loadingIconTemplate && !_loadingIconTemplate) {
+    <svg data-p-icon="spinner" spin [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')"></svg>
+    } @if (loadingIconTemplate || _loadingIconTemplate) {
+    <span [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')">
+        <ng-template *ngTemplateOutlet="loadingIconTemplate || _loadingIconTemplate"></ng-template>
+    </span>
+    } }
+</div>
+}
+<ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
+@if (filterTemplate || _filterTemplate) {
+<ng-container *ngTemplateOutlet="filterTemplate || _filterTemplate; context: { $implicit: filterOptions }"></ng-container>
+} @else { @if (filter) {
+<p-iconfield [class]="cx('pcFilterContainer')" [pt]="ptm('pcFilterContainer')" [unstyled]="unstyled()">
+    <input
+        #filter
+        [pAutoFocus]="filterInputAutoFocus"
+        pInputText
+        type="search"
+        autocomplete="off"
+        [class]="cx('pcFilterInput')"
+        [attr.placeholder]="filterPlaceholder"
+        (keydown.enter)="$event.preventDefault()"
+        (input)="_filter($event.target?.value)"
+        [pt]="ptm('pcFilterInput')"
+        [unstyled]="unstyled()"
+    />
+    <p-inputicon [pt]="ptm('pcFilterIconContainer')" [unstyled]="unstyled()">
+        @if (!filterIconTemplate && !_filterIconTemplate) {
+        <svg data-p-icon="search" [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')"></svg>
+        } @if (filterIconTemplate || _filterIconTemplate) {
+        <span [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')">
+            <ng-template *ngTemplateOutlet="filterIconTemplate || _filterIconTemplate"></ng-template>
+        </span>
+        }
+    </p-inputicon>
+</p-iconfield>
+} } @if (getRootNode()?.length) { @if (virtualScroll) {
+<p-scroller
+    #scroller
+    [items]="serializedValue"
+    [tabindex]="-1"
+    [styleClass]="cx('wrapper')"
+    [style]="{ height: scrollHeight !== 'flex' ? scrollHeight : undefined }"
+    [scrollHeight]="scrollHeight !== 'flex' ? undefined : '100%'"
+    [itemSize]="virtualScrollItemSize"
+    [lazy]="lazy"
+    (onScroll)="onScroll.emit($event)"
+    (onScrollIndexChange)="onScrollIndexChange.emit($event)"
+    (onLazyLoad)="onLazyLoad.emit($event)"
+    [options]="virtualScrollOptions"
+    [pt]="ptm('virtualScroller')"
+    hostName="tree"
+    [attr.data-p]="wrapperDataP"
+>
+    <ng-template #content let-items let-scrollerOptions="options">
+        @if (items) {
+        <ul #content [class]="cx('rootChildren')" [ngClass]="scrollerOptions.contentStyleClass" [style]="scrollerOptions.contentStyle" role="tree" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledBy" [pBind]="ptm('rootChildren')">
+            @for (rowNode of items; track trackBy(index, rowNode); let firstChild = $first; let lastChild = $last; let index = $index) {
+            <p-treeNode
+                #treeNode
+                [level]="rowNode.level"
+                [rowNode]="rowNode"
+                [node]="rowNode.node"
+                [parentNode]="rowNode.parent"
+                [firstChild]="firstChild"
+                [lastChild]="lastChild"
+                [index]="getIndex(scrollerOptions, index)"
+                [itemSize]="scrollerOptions.itemSize"
+                [indentation]="indentation"
+                [loadingMode]="loadingMode"
+                [pt]="pt"
+                [unstyled]="unstyled()"
+            ></p-treeNode>
+            }
+        </ul>
+        }
+    </ng-template>
+    @if (loaderTemplate || _loaderTemplate) {
+    <ng-template #loader let-scrollerOptions="options">
+        <ng-container *ngTemplateOutlet="loaderTemplate || _loaderTemplate; context: { options: scrollerOptions }"></ng-container>
+    </ng-template>
+    }
+</p-scroller>
+} @if (!virtualScroll) {
+<div #wrapper [class]="cx('wrapper')" [style.max-height]="scrollHeight" [pBind]="ptm('wrapper')" [attr.data-p]="wrapperDataP">
+    @if (getRootNode()) {
+    <ul #content [class]="cx('rootChildren')" role="tree" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledBy" [pBind]="ptm('rootChildren')">
+        @for (node of getRootNode(); track trackBy.bind(this)(index, node); let firstChild = $first; let lastChild = $last; let index = $index) {
+        <p-treeNode [node]="node" [firstChild]="firstChild" [lastChild]="lastChild" [index]="index" [level]="0" [loadingMode]="loadingMode" [pt]="pt" [unstyled]="unstyled()"></p-treeNode>
+        }
+    </ul>
+    }
+</div>
+} } @if (!loading && (getRootNode() == null || getRootNode().length === 0)) {
+<div [class]="cx('emptyMessage')" [pBind]="ptm('emptyMessage')">
+    @if (!emptyTemplate && !_emptyTemplate) { {{ emptyMessageLabel }} } @else {
+    <ng-container *ngTemplateOutlet="emptyTemplate || _emptyTemplate"></ng-container>
+    }
+</div>
+}
+<ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>

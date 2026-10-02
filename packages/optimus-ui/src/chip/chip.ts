@@ -34,50 +34,7 @@ const CHIP_INSTANCE = new InjectionToken<Chip>('CHIP_INSTANCE');
     selector: 'p-chip',
     standalone: true,
     imports: [CommonModule, TimesCircleIcon, SharedModule, Bind],
-    template: `
-        <ng-content></ng-content>
-        <img [pBind]="ptm('image')" [class]="cx('image')" [src]="image" *ngIf="image; else iconTemplate" (error)="imageError($event)" [alt]="alt" />
-        <ng-template #iconTemplate><span [pBind]="ptm('icon')" *ngIf="icon" [class]="icon" [ngClass]="cx('icon')"></span></ng-template>
-        <div [pBind]="ptm('label')" [class]="cx('label')" *ngIf="label">{{ label }}</div>
-        <ng-container *ngIf="removable">
-            <ng-container *ngIf="!removeIconTemplate && !_removeIconTemplate">
-                <span
-                    [pBind]="ptm('removeIcon')"
-                    *ngIf="removeIcon"
-                    [class]="removeIcon"
-                    [ngClass]="cx('removeIcon')"
-                    (click)="close($event)"
-                    (keydown)="onKeydown($event)"
-                    [attr.tabindex]="disabled ? -1 : 0"
-                    [attr.aria-label]="removeAriaLabel"
-                    role="button"
-                ></span>
-                <svg
-                    [pBind]="ptm('removeIcon')"
-                    data-p-icon="times-circle"
-                    *ngIf="!removeIcon"
-                    [class]="cx('removeIcon')"
-                    (click)="close($event)"
-                    (keydown)="onKeydown($event)"
-                    [attr.tabindex]="disabled ? -1 : 0"
-                    [attr.aria-label]="removeAriaLabel"
-                    role="button"
-                />
-            </ng-container>
-            <span
-                [pBind]="ptm('removeIcon')"
-                *ngIf="removeIconTemplate || _removeIconTemplate"
-                [attr.tabindex]="disabled ? -1 : 0"
-                [class]="cx('removeIcon')"
-                (click)="close($event)"
-                (keydown)="onKeydown($event)"
-                [attr.aria-label]="removeAriaLabel"
-                role="button"
-            >
-                <ng-template *ngTemplateOutlet="removeIconTemplate || _removeIconTemplate"></ng-template>
-            </span>
-        </ng-container>
-    `,
+    templateUrl: './chip.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [ChipStyle, { provide: CHIP_INSTANCE, useExisting: Chip }, { provide: PARENT_INSTANCE, useExisting: Chip }],
