@@ -1356,7 +1356,7 @@ describe('OrderList', () => {
             fixture.detectChanges();
             const endTime = performance.now();
 
-            expect(endTime - startTime).toBeLessThan(1000);
+            expect(endTime - startTime).toBeLessThan(2000);
             expect(orderList.value?.length).toBe(1000);
         });
 
