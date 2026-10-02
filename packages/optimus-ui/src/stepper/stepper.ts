@@ -80,7 +80,8 @@ export interface StepPanelContentTemplateContext {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
-        '[class]': 'cx("root")'
+        '[class]': 'cx("root")',
+        '[attr.role]': '"tablist"'
     },
     providers: [StepListStyle, { provide: STEPLIST_INSTANCE, useExisting: StepList }, { provide: PARENT_INSTANCE, useExisting: StepList }],
     hostDirectives: [Bind]
@@ -197,42 +198,16 @@ export class StepItem extends BaseComponent<StepItemPassThrough> {
     selector: 'p-step',
     standalone: true,
     imports: [CommonModule, StepperSeparator, SharedModule, BindModule],
-    template: `
-        @if (!content && !_contentTemplate) {
-            <button
-                [attr.id]="id()"
-                [class]="cx('header')"
-                [pBind]="ptm('header')"
-                [attr.role]="'tab'"
-                [tabindex]="isStepDisabled() ? -1 : undefined"
-                [attr.aria-controls]="ariaControls()"
-                [disabled]="isStepDisabled()"
-                (click)="onStepClick()"
-                type="button"
-            >
-                <span [class]="cx('number')" [pBind]="ptm('number')">{{ value() }}</span>
-                <span [class]="cx('title')" [pBind]="ptm('title')">
-                    <ng-content></ng-content>
-                </span>
-            </button>
-            @if (isSeparatorVisible()) {
-                <p-stepper-separator />
-            }
-        } @else {
-            <ng-container *ngTemplateOutlet="content || _contentTemplate; context: { activateCallback: onStepClick.bind(this), value: value(), active: active() }"></ng-container>
-            @if (isSeparatorVisible()) {
-                <p-stepper-separator />
-            }
-        }
-    `,
+    templateUrl: './step.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
         '[class]': 'cx("root")',
-        '[attr.aria-current]': 'active() ? "step" : undefined',
-        '[attr.role]': '"presentation"',
+        '[attr.role]': '"tab"',
         '[attr.data-p-active]': 'active()',
-        '[attr.data-p-disabled]': 'isStepDisabled()'
+        '[attr.aria-selected]': 'active()',
+        '[attr.data-p-disabled]': 'isStepDisabled()',
+        '[attr.aria-disabled]': 'isStepDisabled()'
     },
     providers: [StepStyle, { provide: STEP_INSTANCE, useExisting: Step }, { provide: PARENT_INSTANCE, useExisting: Step }],
     hostDirectives: [Bind]
@@ -321,18 +296,7 @@ export class Step extends BaseComponent<StepPassThrough> {
     selector: 'p-step-panel',
     standalone: true,
     imports: [CommonModule, StepperSeparator, SharedModule, BindModule, MotionModule],
-    template: `
-        <p-motion [visible]="active()" name="p-collapsible" [disabled]="!isVertical()" [options]="computedMotionOptions()">
-            <div [class]="cx('contentWrapper')" [pBind]="ptm('contentWrapper')">
-                @if (isSeparatorVisible()) {
-                    <p-stepper-separator />
-                }
-                <div [class]="cx('content')" [pBind]="ptm('content')">
-                    <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { activateCallback: updateValue.bind(this), value: value(), active: active() }"></ng-container>
-                </div>
-            </div>
-        </p-motion>
-    `,
+    templateUrl: './steppanel.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
@@ -462,7 +426,6 @@ export class StepPanels extends BaseComponent<StepPanelsPassThrough> {
     providers: [StepperStyle, { provide: STEPPER_INSTANCE, useExisting: Stepper }, { provide: PARENT_INSTANCE, useExisting: Stepper }],
     host: {
         '[class]': 'cx("root")',
-        '[attr.role]': '"tablist"',
         '[attr.id]': 'id()'
     },
     hostDirectives: [Bind]

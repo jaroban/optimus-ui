@@ -1,0 +1,9 @@
+<ng-content></ng-content>
+@if (!iconTemplate && !_iconTemplate) { @if (icon) {
+<span [class]="cx('icon')" [ngClass]="icon" [pBind]="ptm('icon')"></span>
+} } @if (iconTemplate || _iconTemplate) {
+<span [class]="cx('icon')" [pBind]="ptm('icon')">
+    <ng-template *ngTemplateOutlet="iconTemplate || _iconTemplate"></ng-template>
+</span>
+}
+<span [class]="cx('label')" [pBind]="ptm('label')">{{ value }}</span>

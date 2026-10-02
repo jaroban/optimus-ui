@@ -44,34 +44,7 @@ const OVERLAY_INSTANCE = new InjectionToken<Overlay>('OVERLAY_INSTANCE');
     standalone: true,
     imports: [CommonModule, SharedModule, Bind, MotionModule],
     hostDirectives: [Bind],
-    template: `
-        @if (inline()) {
-            <ng-content></ng-content>
-            <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: { mode: null } }"></ng-container>
-        } @else {
-            @if (modalVisible) {
-                <div #overlay [class]="cn(cx('root'), styleClass)" [style]="sx('root')" [pBind]="ptm('root')" (click)="onOverlayClick()">
-                    <p-motion
-                        [visible]="visible"
-                        name="p-anchored-overlay"
-                        [appear]="true"
-                        [options]="computedMotionOptions()"
-                        (onBeforeEnter)="onOverlayBeforeEnter($event)"
-                        (onEnter)="onOverlayEnter($event)"
-                        (onAfterEnter)="onOverlayAfterEnter($event)"
-                        (onBeforeLeave)="onOverlayBeforeLeave($event)"
-                        (onLeave)="onOverlayLeave($event)"
-                        (onAfterLeave)="onOverlayAfterLeave($event)"
-                    >
-                        <div #content [class]="cn(cx('content'), contentStyleClass)" [pBind]="ptm('content')" (click)="onOverlayContentClick($event)">
-                            <ng-content></ng-content>
-                            <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: { mode: overlayMode } }"></ng-container>
-                        </div>
-                    </p-motion>
-                </div>
-            }
-        }
-    `,
+    templateUrl: './overlay.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [OverlayStyle, { provide: OVERLAY_INSTANCE, useExisting: Overlay }, { provide: PARENT_INSTANCE, useExisting: Overlay }]
@@ -651,7 +624,11 @@ export class Overlay extends BaseComponent {
             this.scrollHandler = new ConnectedOverlayScrollHandler(this.targetEl, (event: any) => {
                 const valid = this.listener ? this.listener(event, { type: 'scroll', mode: this.overlayMode, valid: true }) : true;
 
-                valid && this.hide(event, true);
+                if (valid) {
+                    this.zone.run(() => {
+                        this.hide(event, true);
+                    });
+                }
             });
         }
 
@@ -671,7 +648,12 @@ export class Overlay extends BaseComponent {
                 const isOutsideClicked = !isTargetClicked && !this.isOverlayContentClicked;
                 const valid = this.listener ? this.listener(event, { type: 'outside', mode: this.overlayMode, valid: event.which !== 3 && isOutsideClicked }) : isOutsideClicked;
 
-                valid && this.hide(event);
+                if (valid) {
+                    this.zone.run(() => {
+                        this.hide(event);
+                    });
+                }
+
                 this.isOverlayClicked = this.isOverlayContentClicked = false;
             });
         }
@@ -689,7 +671,11 @@ export class Overlay extends BaseComponent {
             this.documentResizeListener = this.renderer.listen(this.document.defaultView, 'resize', (event) => {
                 const valid = this.listener ? this.listener(event, { type: 'resize', mode: this.overlayMode, valid: !isTouchDevice() }) : !isTouchDevice();
 
-                valid && this.hide(event, true);
+                if (valid) {
+                    this.zone.run(() => {
+                        this.hide(event, true);
+                    });
+                }
             });
         }
     }
