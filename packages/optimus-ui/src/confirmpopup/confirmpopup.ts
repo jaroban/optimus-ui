@@ -53,80 +53,7 @@ const CONFIRMPOPUP_INSTANCE = new InjectionToken<ConfirmPopup>('CONFIRMPOPUP_INS
     imports: [CommonModule, SharedModule, ButtonModule, FocusTrap, Bind, MotionModule],
     providers: [ConfirmPopupStyle, { provide: CONFIRMPOPUP_INSTANCE, useExisting: ConfirmPopup }, { provide: PARENT_INSTANCE, useExisting: ConfirmPopup }],
     hostDirectives: [Bind],
-    template: `
-        @if (render()) {
-            <div
-                [pMotion]="computedVisible()"
-                [pMotionAppear]="true"
-                [pMotionName]="'p-anchored-overlay'"
-                [pMotionOptions]="computedMotionOptions()"
-                (pMotionOnBeforeEnter)="onBeforeEnter($event)"
-                (pMotionOnAfterLeave)="onAfterLeave()"
-                pFocusTrap
-                [pBind]="ptm('root')"
-                [class]="cn(cx('root'), styleClass)"
-                [ngStyle]="style"
-                role="alertdialog"
-                (click)="onOverlayClick($event)"
-            >
-                <ng-container *ngIf="headlessTemplate || _headlessTemplate; else notHeadless">
-                    <ng-container *ngTemplateOutlet="headlessTemplate || _headlessTemplate; context: { $implicit: confirmation }"></ng-container>
-                </ng-container>
-                <ng-template #notHeadless>
-                    <div #content [pBind]="ptm('content')" [class]="cx('content')">
-                        <ng-container *ngIf="contentTemplate || _contentTemplate; else withoutContentTemplate">
-                            <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: confirmation }"></ng-container>
-                        </ng-container>
-                        <ng-template #withoutContentTemplate>
-                            <i [pBind]="ptm('icon')" [class]="cx('icon')" *ngIf="confirmation?.icon"></i>
-                            <span [pBind]="ptm('message')" [class]="cx('message')">{{ confirmation?.message }}</span>
-                        </ng-template>
-                    </div>
-                    <div [pBind]="ptm('footer')" [class]="cx('footer')">
-                        <p-button
-                            type="button"
-                            [label]="rejectButtonLabel"
-                            (onClick)="onReject()"
-                            [pt]="ptm('pcRejectButton')"
-                            [class]="cx('pcRejectButton')"
-                            [styleClass]="confirmation?.rejectButtonStyleClass"
-                            [size]="confirmation?.rejectButtonProps?.size || 'small'"
-                            [text]="confirmation?.rejectButtonProps?.text || false"
-                            *ngIf="confirmation?.rejectVisible !== false"
-                            [attr.aria-label]="rejectButtonLabel"
-                            [buttonProps]="getRejectButtonProps()"
-                            [autofocus]="autoFocusReject"
-                            [unstyled]="unstyled()"
-                        >
-                            <ng-template #icon>
-                                <i [class]="confirmation?.rejectIcon" *ngIf="confirmation?.rejectIcon; else rejecticon"></i>
-                                <ng-template #rejecticon *ngTemplateOutlet="rejectIconTemplate || _rejectIconTemplate"></ng-template>
-                            </ng-template>
-                        </p-button>
-                        <p-button
-                            type="button"
-                            [label]="acceptButtonLabel"
-                            (onClick)="onAccept()"
-                            [pt]="ptm('pcAcceptButton')"
-                            [class]="cx('pcAcceptButton')"
-                            [styleClass]="confirmation?.acceptButtonStyleClass"
-                            [size]="confirmation?.acceptButtonProps?.size || 'small'"
-                            *ngIf="confirmation?.acceptVisible !== false"
-                            [attr.aria-label]="acceptButtonLabel"
-                            [buttonProps]="getAcceptButtonProps()"
-                            [autofocus]="autoFocusAccept"
-                            [unstyled]="unstyled()"
-                        >
-                            <ng-template #icon>
-                                <i [class]="confirmation?.acceptIcon" *ngIf="confirmation?.acceptIcon; else accepticontemplate"></i>
-                                <ng-template #accepticontemplate *ngTemplateOutlet="acceptIconTemplate || _acceptIconTemplate"></ng-template>
-                            </ng-template>
-                        </p-button>
-                    </div>
-                </ng-template>
-            </div>
-        }
-    `,
+    templateUrl: './confirmpopup.html',
 
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
@@ -298,11 +225,6 @@ export class ConfirmPopup extends BaseComponent<ConfirmPopupPassThrough> {
 
             if (confirmation.key === this.key) {
                 this.confirmation = confirmation;
-                const keys = Object.keys(confirmation);
-
-                keys.forEach((key) => {
-                    this[key] = confirmation[key];
-                });
 
                 if (this.confirmation.accept) {
                     this.confirmation.acceptEvent = new EventEmitter();
@@ -354,10 +276,12 @@ export class ConfirmPopup extends BaseComponent<ConfirmPopupPassThrough> {
     }
 
     option(name: string, k?: string) {
-        const source: { [key: string]: any } = this;
-        if (source.hasOwnProperty(name)) {
+        const confirmation: { [key: string]: any } = this.confirmation ?? {};
+        const source: { [key: string]: any } = Object.prototype.hasOwnProperty.call(confirmation, name) ? confirmation : this;
+
+        if (Object.prototype.hasOwnProperty.call(source, name)) {
             if (k) {
-                return source[k];
+                return source[name]?.[k];
             }
             return source[name];
         }
@@ -374,7 +298,7 @@ export class ConfirmPopup extends BaseComponent<ConfirmPopupPassThrough> {
 
     onBeforeEnter(event: MotionEvent) {
         if (this.confirmation) {
-            const focus = this.confirmation.defaultFocus ?? this.defaultFocus;
+            const focus = this.option('defaultFocus');
             this.autoFocusAccept = focus === 'accept';
             this.autoFocusReject = focus === 'reject';
         }
@@ -389,10 +313,10 @@ export class ConfirmPopup extends BaseComponent<ConfirmPopupPassThrough> {
     }
 
     handleFocus() {
-        if (this.defaultFocus && (this.acceptButtonViewChild() || this.rejectButtonViewChild())) {
-            const focusEl = <HTMLButtonElement>(
-                (this.defaultFocus === 'accept' ? findSingle(this.acceptButtonViewChild()?.nativeElement, '[data-pc-section="root"]') : findSingle(this.rejectButtonViewChild()?.nativeElement, '[data-pc-section="root"]'))
-            );
+        const defaultFocus = this.option('defaultFocus');
+
+        if (defaultFocus && (this.acceptButtonViewChild() || this.rejectButtonViewChild())) {
+            const focusEl = <HTMLButtonElement>(defaultFocus === 'accept' ? findSingle(this.acceptButtonViewChild()?.nativeElement, '[data-pc-section="root"]') : findSingle(this.rejectButtonViewChild()?.nativeElement, '[data-pc-section="root"]'));
             focusEl.focus();
         }
     }
@@ -596,11 +520,11 @@ export class ConfirmPopup extends BaseComponent<ConfirmPopupPassThrough> {
     }
 
     get acceptButtonLabel(): string {
-        return this.confirmation?.acceptLabel || this.config.getTranslation(TranslationKeys.ACCEPT);
+        return this.confirmation?.acceptLabel || this.confirmation?.acceptButtonProps?.label || this.config.getTranslation(TranslationKeys.ACCEPT);
     }
 
     get rejectButtonLabel(): string {
-        return this.confirmation?.rejectLabel || this.config.getTranslation(TranslationKeys.REJECT);
+        return this.confirmation?.rejectLabel || this.confirmation?.rejectButtonProps?.label || this.config.getTranslation(TranslationKeys.REJECT);
     }
 
     onDestroy() {

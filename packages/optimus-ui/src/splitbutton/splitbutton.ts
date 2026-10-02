@@ -32,6 +32,7 @@ import { ChevronDownIcon } from '@openng/optimus-ui/icons';
 import { Ripple } from '@openng/optimus-ui/ripple';
 import { TieredMenu } from '@openng/optimus-ui/tieredmenu';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
+import type { ButtonSeverity } from '@openng/optimus-ui/types/button';
 import { ButtonProps, MenuButtonProps, SplitButtonPassThrough } from '@openng/optimus-ui/types/splitbutton';
 import { SplitButtonStyle } from './style/splitbuttonstyle';
 
@@ -46,99 +47,7 @@ type SplitButtonIconPosition = 'left' | 'right';
     selector: 'p-splitbutton, p-splitButton, p-split-button',
     standalone: true,
     imports: [CommonModule, ButtonDirective, TieredMenu, AutoFocus, ChevronDownIcon, Ripple, TooltipModule, SharedModule],
-    template: `
-        <ng-container *ngIf="contentTemplate || _contentTemplate; else defaultButton">
-            <button
-                [class]="cx('pcButton')"
-                type="button"
-                pButton
-                pRipple
-                [severity]="severity"
-                [text]="text"
-                [outlined]="outlined"
-                [size]="size"
-                [icon]="icon"
-                [iconPos]="iconPos"
-                (click)="onDefaultButtonClick($event)"
-                [disabled]="disabled"
-                [attr.tabindex]="tabindex"
-                [attr.aria-label]="buttonProps?.['ariaLabel'] || label"
-                [pAutoFocus]="autofocus"
-                [pTooltip]="tooltip"
-                [pTooltipUnstyled]="unstyled()"
-                [tooltipOptions]="tooltipOptions"
-                [pt]="ptm('pcButton')"
-                [unstyled]="unstyled()"
-            >
-                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
-            </button>
-        </ng-container>
-        <ng-template #defaultButton>
-            <button
-                #defaultbtn
-                [class]="cx('pcButton')"
-                type="button"
-                pButton
-                pRipple
-                [severity]="severity"
-                [text]="text"
-                [outlined]="outlined"
-                [size]="size"
-                [icon]="icon"
-                [iconPos]="iconPos"
-                [label]="label"
-                (click)="onDefaultButtonClick($event)"
-                [disabled]="buttonDisabled"
-                [attr.tabindex]="tabindex"
-                [attr.aria-label]="buttonProps?.['ariaLabel']"
-                [pAutoFocus]="autofocus"
-                [pTooltip]="tooltip"
-                [pTooltipUnstyled]="unstyled()"
-                [tooltipOptions]="tooltipOptions"
-                [pt]="ptm('pcButton')"
-                [unstyled]="unstyled()"
-            ></button>
-        </ng-template>
-        <button
-            type="button"
-            pButton
-            pRipple
-            [size]="size"
-            [severity]="severity"
-            [text]="text"
-            [outlined]="outlined"
-            [class]="cx('pcDropdown')"
-            (click)="onDropdownButtonClick($event)"
-            (keydown)="onDropdownButtonKeydown($event)"
-            [disabled]="menuButtonDisabled"
-            [attr.aria-label]="menuButtonProps?.['ariaLabel'] || expandAriaLabel"
-            [attr.aria-haspopup]="menuButtonProps?.['ariaHasPopup'] || true"
-            [attr.aria-expanded]="menuButtonProps?.['ariaExpanded'] || isExpanded()"
-            [attr.aria-controls]="menuButtonProps?.['ariaControls'] || ariaId"
-            [pt]="ptm('pcDropdown')"
-            [unstyled]="unstyled()"
-        >
-            <span *ngIf="dropdownIcon" [class]="dropdownIcon"></span>
-            <ng-container *ngIf="!dropdownIcon">
-                <svg data-p-icon="chevron-down" *ngIf="!dropdownIconTemplate && !_dropdownIconTemplate" />
-                <ng-template *ngTemplateOutlet="dropdownIconTemplate || _dropdownIconTemplate"></ng-template>
-            </ng-container>
-        </button>
-        <p-tieredmenu
-            [id]="ariaId"
-            #menu
-            [popup]="true"
-            [model]="model"
-            [style]="menuStyle"
-            [styleClass]="menuStyleClass"
-            [appendTo]="$appendTo()"
-            [motionOptions]="computedMotionOptions()"
-            (onHide)="onHide()"
-            (onShow)="onShow()"
-            [pt]="ptm('pcMenu')"
-            [unstyled]="unstyled()"
-        ></p-tieredmenu>
-    `,
+    templateUrl: './splitbutton.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [SplitButtonStyle, { provide: SPLITBUTTON_INSTANCE, useExisting: SplitButton }, { provide: PARENT_INSTANCE, useExisting: SplitButton }],
     encapsulation: ViewEncapsulation.None,
@@ -166,7 +75,7 @@ export class SplitButton extends BaseComponent<SplitButtonPassThrough> {
      * Defines the style of the button.
      * @group Props
      */
-    @Input() severity: 'success' | 'info' | 'warn' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast' | null | undefined;
+    @Input() severity: ButtonSeverity;
     /**
      * Add a shadow to indicate elevation.
      * @group Props

@@ -17,72 +17,7 @@ const DYNAMIC_DIALOG_INSTANCE = new InjectionToken<DynamicDialog>('DYNAMIC_DIALO
     selector: 'p-dynamicDialog, p-dynamicdialog, p-dynamic-dialog',
     standalone: true,
     imports: [CommonModule, SharedModule, DynamicDialogContent, Dialog, BindModule],
-    template: `
-        <p-dialog
-            [(visible)]="visible"
-            [header]="ddconfig?.header"
-            [draggable]="ddconfig?.draggable !== false"
-            [resizable]="ddconfig?.resizable !== false"
-            [contentStyle]="ddconfig?.contentStyle"
-            [modal]="ddconfig?.modal !== false"
-            [closeOnEscape]="ddconfig?.closeOnEscape !== false"
-            [dismissableMask]="ddconfig?.dismissableMask"
-            [rtl]="ddconfig?.rtl"
-            [closable]="closable"
-            [breakpoints]="breakpoints"
-            [styleClass]="ddconfig?.styleClass"
-            [maskStyleClass]="ddconfig?.maskStyleClass"
-            [showHeader]="ddconfig?.showHeader !== false"
-            [autoZIndex]="ddconfig?.autoZIndex !== false"
-            [baseZIndex]="ddconfig?.baseZIndex || 0"
-            [minX]="minX"
-            [minY]="minY"
-            [focusOnShow]="ddconfig?.focusOnShow !== false"
-            [maximizable]="maximizable"
-            [keepInViewport]="keepInViewport"
-            [focusTrap]="ddconfig?.focusTrap !== false"
-            [transitionOptions]="ddconfig?.transitionOptions || '150ms cubic-bezier(0, 0, 0.2, 1)'"
-            [closeAriaLabel]="ddconfig?.closeAriaLabel || defaultCloseAriaLabel"
-            [minimizeIcon]="minimizeIcon"
-            [maximizeIcon]="maximizeIcon"
-            [closeButtonProps]="{ severity: 'secondary', variant: 'text', rounded: true }"
-            [maximizeButtonProps]="{ severity: 'secondary', variant: 'text', rounded: true }"
-            [style]="dialogStyle"
-            [position]="position"
-            (onHide)="onDialogHide($event)"
-            (onMaximize)="onDialogMaximize($event)"
-            (onResizeInit)="onDialogResizeInit($event)"
-            (onResizeEnd)="onDialogResizeEnd($event)"
-            (onDragEnd)="onDialogDragEnd($event)"
-            (visibleChange)="onVisibleChange($event)"
-            [pt]="ddconfig.pt"
-            appendTo="self"
-            hostName="DynamicDialog"
-            [unstyled]="isUnstyled"
-        >
-            <ng-template #header *ngIf="headerTemplate">
-                <ng-container *ngComponentOutlet="headerTemplate"></ng-container>
-            </ng-template>
-            <ng-template #content *ngIf="contentTemplate">
-                <ng-container *ngComponentOutlet="contentTemplate"></ng-container>
-            </ng-template>
-            <ng-template #footer *ngIf="footerTemplate">
-                <ng-container *ngComponentOutlet="footerTemplate"></ng-container>
-            </ng-template>
-            <ng-template #closeicon *ngIf="closeIconTemplate">
-                <ng-container *ngComponentOutlet="closeIconTemplate"></ng-container>
-            </ng-template>
-            <ng-template #maximizeicon *ngIf="maximizeIconTemplate">
-                <ng-container *ngComponentOutlet="maximizeIconTemplate"></ng-container>
-            </ng-template>
-            <ng-template #minimizeicon *ngIf="minimizeIconTemplate">
-                <ng-container *ngComponentOutlet="minimizeIconTemplate"></ng-container>
-            </ng-template>
-
-            <ng-template pDynamicDialogContent *ngIf="!contentTemplate"></ng-template>
-            <div *ngIf="ddconfig.footer && !footerTemplate">{{ ddconfig.footer }}</div>
-        </p-dialog>
-    `,
+    templateUrl: './dynamicdialog.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     encapsulation: ViewEncapsulation.None,
     providers: [DynamicDialogStyle, { provide: DYNAMIC_DIALOG_INSTANCE, useExisting: DynamicDialog }, { provide: PARENT_INSTANCE, useExisting: DynamicDialog }],
@@ -259,7 +194,11 @@ export class DynamicDialog extends BaseComponent<DialogPassThrough> {
     }
 
     getAriaLabelledBy() {
-        const { header, showHeader } = this.ddconfig;
+        const { header, showHeader, ariaLabelledBy } = this.ddconfig;
+
+        if (ariaLabelledBy) {
+            return ariaLabelledBy;
+        }
 
         if (header === null || showHeader === false) {
             return null;

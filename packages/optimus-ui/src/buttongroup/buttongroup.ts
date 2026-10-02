@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, NgModule, ViewEncapsulation } from '@angular/core';
 import { BaseComponent } from '@openng/optimus-ui/basecomponent';
 import { ButtonGroupStyle } from './style/buttongroupstyle';
@@ -6,12 +5,8 @@ import { ButtonGroupStyle } from './style/buttongroupstyle';
 @Component({
     selector: 'p-buttonGroup, p-buttongroup, p-button-group',
     standalone: true,
-    imports: [CommonModule],
-    template: `
-        <span class="p-buttongroup p-component" role="group">
-            <ng-content></ng-content>
-        </span>
-    `,
+    imports: [],
+    templateUrl: './buttongroup.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [ButtonGroupStyle]

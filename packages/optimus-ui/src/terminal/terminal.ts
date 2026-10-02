@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, InjectionToken, Input, NgModule, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { find } from '@openng/optimus-ui-utils';
@@ -19,21 +18,8 @@ const TERMINAL_INSTANCE = new InjectionToken<Terminal>('TERMINAL_INSTANCE');
 @Component({
     selector: 'p-terminal',
     standalone: true,
-    imports: [CommonModule, FormsModule, SharedModule, Bind],
-    template: `
-        <div [class]="cx('welcomeMessage')" [pBind]="ptm('welcomeMessage')" *ngIf="welcomeMessage">{{ welcomeMessage }}</div>
-        <div [class]="cx('commandList')" [pBind]="ptm('commandList')">
-            <div [class]="cx('command')" [pBind]="ptm('command')" *ngFor="let command of commands">
-                <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
-                <span [class]="cx('commandValue')" [pBind]="ptm('commandValue')">{{ command.text }}</span>
-                <div [class]="cx('commandResponse')" [pBind]="ptm('commandResponse')" [attr.aria-live]="'polite'">{{ command.response }}</div>
-            </div>
-        </div>
-        <div [class]="cx('prompt')" [pBind]="ptm('prompt')">
-            <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
-            <input #in type="text" [(ngModel)]="command" [class]="cx('promptValue')" [pBind]="ptm('promptValue')" autocomplete="off" (keydown)="handleCommand($event)" autofocus />
-        </div>
-    `,
+    imports: [FormsModule, SharedModule, Bind],
+    templateUrl: './terminal.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [TerminalStyle, { provide: TERMINAL_INSTANCE, useExisting: Terminal }, { provide: PARENT_INSTANCE, useExisting: Terminal }],
