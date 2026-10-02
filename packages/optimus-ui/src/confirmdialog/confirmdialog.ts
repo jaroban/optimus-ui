@@ -44,107 +44,7 @@ const CONFIRMDIALOG_INSTANCE = new InjectionToken<ConfirmDialog>('CONFIRMDIALOG_
     selector: 'p-confirmDialog, p-confirmdialog, p-confirm-dialog',
     standalone: true,
     imports: [CommonModule, Button, Dialog, SharedModule, Bind],
-    template: `
-        <p-dialog
-            [pt]="pt"
-            #dialog
-            [visible]="visible"
-            (visibleChange)="onVisibleChange($event)"
-            role="alertdialog"
-            [closable]="option('closable')"
-            [styleClass]="cn(cx('root'), styleClass)"
-            [modal]="option('modal')"
-            [header]="option('header')"
-            [closeOnEscape]="option('closeOnEscape')"
-            [blockScroll]="option('blockScroll')"
-            [appendTo]="$appendTo()"
-            [position]="position"
-            [style]="style"
-            [dismissableMask]="dismissableMask"
-            [draggable]="draggable"
-            [baseZIndex]="baseZIndex"
-            [autoZIndex]="autoZIndex"
-            [maskStyleClass]="cn(cx('mask'), maskStyleClass)"
-            [unstyled]="unstyled()"
-            (onHide)="onDialogHide()"
-        >
-            @if (headlessTemplate || _headlessTemplate) {
-                <ng-template #headless>
-                    <ng-container
-                        *ngTemplateOutlet="
-                            headlessTemplate || _headlessTemplate;
-                            context: {
-                                $implicit: confirmation,
-                                onAccept: onAccept.bind(this),
-                                onReject: onReject.bind(this)
-                            }
-                        "
-                    ></ng-container>
-                </ng-template>
-            } @else {
-                @if (headerTemplate || _headerTemplate) {
-                    <ng-template #header>
-                        <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
-                    </ng-template>
-                }
-
-                <ng-template #content>
-                    @if (iconTemplate || _iconTemplate) {
-                        <ng-template *ngTemplateOutlet="iconTemplate || _iconTemplate"></ng-template>
-                    } @else if (!iconTemplate && !_iconTemplate && !_messageTemplate && !messageTemplate) {
-                        <i [ngClass]="cx('icon')" [class]="option('icon')" [pBind]="ptm('icon')" *ngIf="option('icon')"></i>
-                    }
-                    @if (messageTemplate || _messageTemplate) {
-                        <ng-template *ngTemplateOutlet="messageTemplate || _messageTemplate; context: { $implicit: confirmation }"></ng-template>
-                    } @else {
-                        <span [class]="cx('message')" [pBind]="ptm('message')" [innerHTML]="option('message')"> </span>
-                    }
-                </ng-template>
-            }
-            <ng-template #footer>
-                @if (footerTemplate || _footerTemplate) {
-                    <ng-content select="p-footer"></ng-content>
-                    <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
-                }
-                @if (!footerTemplate && !_footerTemplate) {
-                    <p-button
-                        [pt]="ptm('pcRejectButton')"
-                        *ngIf="option('rejectVisible')"
-                        [label]="rejectButtonLabel"
-                        (onClick)="onReject()"
-                        [styleClass]="getButtonStyleClass('pcRejectButton', 'rejectButtonStyleClass')"
-                        [ariaLabel]="option('rejectButtonProps', 'ariaLabel')"
-                        [buttonProps]="getRejectButtonProps()"
-                        [unstyled]="unstyled()"
-                    >
-                        <ng-template #icon>
-                            @if (rejectIcon && !rejectIconTemplate && !_rejectIconTemplate) {
-                                <i *ngIf="option('rejectIcon')" [class]="option('rejectIcon')" [pBind]="ptm('pcRejectButton')['icon']"></i>
-                            }
-                            <ng-template *ngTemplateOutlet="rejectIconTemplate || _rejectIconTemplate"></ng-template>
-                        </ng-template>
-                    </p-button>
-                    <p-button
-                        [pt]="ptm('pcAcceptButton')"
-                        [label]="acceptButtonLabel"
-                        (onClick)="onAccept()"
-                        [styleClass]="getButtonStyleClass('pcAcceptButton', 'acceptButtonStyleClass')"
-                        *ngIf="option('acceptVisible')"
-                        [ariaLabel]="option('acceptButtonProps', 'ariaLabel')"
-                        [buttonProps]="getAcceptButtonProps()"
-                        [unstyled]="unstyled()"
-                    >
-                        <ng-template #icon>
-                            @if (acceptIcon && !_acceptIconTemplate && !acceptIconTemplate) {
-                                <i *ngIf="option('acceptIcon')" [class]="option('acceptIcon')" [pBind]="ptm('pcAcceptButton')['icon']"></i>
-                            }
-                            <ng-template *ngTemplateOutlet="acceptIconTemplate || _acceptIconTemplate"></ng-template>
-                        </ng-template>
-                    </p-button>
-                }
-            </ng-template>
-        </p-dialog>
-    `,
+    templateUrl: './confirmdialog.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [ConfirmDialogStyle, { provide: CONFIRMDIALOG_INSTANCE, useExisting: ConfirmDialog }, { provide: PARENT_INSTANCE, useExisting: ConfirmDialog }],
@@ -460,12 +360,6 @@ export class ConfirmDialog extends BaseComponent<ConfirmDialogPassThrough> imple
             if (confirmation.key === this.key) {
                 this.confirmation = confirmation;
 
-                const keys = Object.keys(confirmation);
-
-                keys.forEach((key) => {
-                    this[key] = confirmation[key];
-                });
-
                 if (this.confirmation.accept) {
                     this.confirmation.acceptEvent = new EventEmitter();
                     this.confirmation.acceptEvent.subscribe(this.confirmation.accept);
@@ -532,9 +426,11 @@ export class ConfirmDialog extends BaseComponent<ConfirmDialogPassThrough> imple
     }
 
     option(name: string, k?: string) {
-        const source: { [key: string]: any } = this;
-        if (source.hasOwnProperty(name)) {
-            const value = k ? source[k] : source[name];
+        const confirmation: { [key: string]: any } = this.confirmation ?? {};
+        const source: { [key: string]: any } = Object.prototype.hasOwnProperty.call(confirmation, name) ? confirmation : this;
+
+        if (Object.prototype.hasOwnProperty.call(source, name)) {
+            const value = k ? source[name]?.[k] : source[name];
             return typeof value === 'function' ? value() : value;
         }
 
