@@ -17,42 +17,7 @@ const CARD_INSTANCE = new InjectionToken<Card>('CARD_INSTANCE');
     selector: 'p-card',
     standalone: true,
     imports: [CommonModule, SharedModule, BindModule],
-    template: `
-        @if (headerFacet || headerTemplate || _headerTemplate) {
-            <div [pBind]="ptm('header')" [class]="cx('header')">
-                <ng-content select="p-header"></ng-content>
-                <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
-            </div>
-        }
-        <div [pBind]="ptm('body')" [class]="cx('body')">
-            @if (header || titleTemplate || _titleTemplate) {
-                <div [pBind]="ptm('title')" [class]="cx('title')">
-                    @if (header && !_titleTemplate && !titleTemplate) {
-                        {{ header }}
-                    }
-                    <ng-container *ngTemplateOutlet="titleTemplate || _titleTemplate"></ng-container>
-                </div>
-            }
-            @if (subheader || subtitleTemplate || _subtitleTemplate) {
-                <div [pBind]="ptm('subtitle')" [class]="cx('subtitle')">
-                    @if (subheader && !_subtitleTemplate && !subtitleTemplate) {
-                        {{ subheader }}
-                    }
-                    <ng-container *ngTemplateOutlet="subtitleTemplate || _subtitleTemplate"></ng-container>
-                </div>
-            }
-            <div [pBind]="ptm('content')" [class]="cx('content')">
-                <ng-content></ng-content>
-                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
-            </div>
-            @if (footerFacet || footerTemplate || _footerTemplate) {
-                <div [pBind]="ptm('footer')" [class]="cx('footer')">
-                    <ng-content select="p-footer"></ng-content>
-                    <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
-                </div>
-            }
-        </div>
-    `,
+    templateUrl: './card.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [CardStyle, { provide: CARD_INSTANCE, useExisting: Card }, { provide: PARENT_INSTANCE, useExisting: Card }],

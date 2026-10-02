@@ -1,0 +1,14 @@
+@if (!content && !_contentTemplate) {
+<button [attr.id]="id()" [class]="cx('header')" [pBind]="ptm('header')" [tabindex]="isStepDisabled() ? -1 : undefined" [attr.aria-controls]="ariaControls()" [disabled]="isStepDisabled()" (click)="onStepClick()" type="button">
+    <span [class]="cx('number')" [pBind]="ptm('number')">{{ value() }}</span>
+    <span [class]="cx('title')" [pBind]="ptm('title')">
+        <ng-content></ng-content>
+    </span>
+</button>
+@if (isSeparatorVisible()) {
+<p-stepper-separator />
+} } @else {
+<ng-container *ngTemplateOutlet="content || _contentTemplate; context: { activateCallback: onStepClick.bind(this), value: value(), active: active() }"></ng-container>
+@if (isSeparatorVisible()) {
+<p-stepper-separator />
+} }

@@ -19,38 +19,7 @@ const SPLITTER_INSTANCE = new InjectionToken<Splitter>('SPLITTER_INSTANCE');
     selector: 'p-splitter',
     standalone: true,
     imports: [CommonModule, SharedModule, BindModule],
-    template: `
-        @for (panel of panels; track panel; let i = $index) {
-            <div [pBind]="ptm('panel')" [class]="cn(cx('panel'), panelStyleClass)" [ngStyle]="panelStyle" tabindex="-1">
-                <ng-container *ngTemplateOutlet="panel"></ng-container>
-            </div>
-            @if (i !== panels.length - 1) {
-                <div
-                    [pBind]="ptm('gutter')"
-                    [class]="cx('gutter')"
-                    role="separator"
-                    tabindex="-1"
-                    (mousedown)="onGutterMouseDown($event, i)"
-                    (touchstart)="onGutterTouchStart($event, i)"
-                    (touchmove)="onGutterTouchMove($event)"
-                    (touchend)="onGutterTouchEnd($event)"
-                    [attr.data-p-gutter-resizing]="false"
-                    [attr.data-p]="dataP"
-                >
-                    <div
-                        [pBind]="ptm('gutterHandle')"
-                        [class]="cx('gutterHandle')"
-                        tabindex="0"
-                        [ngStyle]="gutterStyle()"
-                        [attr.aria-orientation]="layout"
-                        [attr.aria-valuenow]="prevSize"
-                        (keyup)="onGutterKeyUp($event)"
-                        (keydown)="onGutterKeyDown($event, i)"
-                    ></div>
-                </div>
-            }
-        }
-    `,
+    templateUrl: './splitter.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
