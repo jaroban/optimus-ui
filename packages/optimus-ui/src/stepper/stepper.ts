@@ -80,7 +80,8 @@ export interface StepPanelContentTemplateContext {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
-        '[class]': 'cx("root")'
+        '[class]': 'cx("root")',
+        '[attr.role]': '"tablist"'
     },
     providers: [StepListStyle, { provide: STEPLIST_INSTANCE, useExisting: StepList }, { provide: PARENT_INSTANCE, useExisting: StepList }],
     hostDirectives: [Bind]
@@ -202,10 +203,11 @@ export class StepItem extends BaseComponent<StepItemPassThrough> {
     encapsulation: ViewEncapsulation.None,
     host: {
         '[class]': 'cx("root")',
-        '[attr.aria-current]': 'active() ? "step" : undefined',
-        '[attr.role]': '"presentation"',
+        '[attr.role]': '"tab"',
         '[attr.data-p-active]': 'active()',
-        '[attr.data-p-disabled]': 'isStepDisabled()'
+        '[attr.aria-selected]': 'active()',
+        '[attr.data-p-disabled]': 'isStepDisabled()',
+        '[attr.aria-disabled]': 'isStepDisabled()'
     },
     providers: [StepStyle, { provide: STEP_INSTANCE, useExisting: Step }, { provide: PARENT_INSTANCE, useExisting: Step }],
     hostDirectives: [Bind]
@@ -424,7 +426,6 @@ export class StepPanels extends BaseComponent<StepPanelsPassThrough> {
     providers: [StepperStyle, { provide: STEPPER_INSTANCE, useExisting: Stepper }, { provide: PARENT_INSTANCE, useExisting: Stepper }],
     host: {
         '[class]': 'cx("root")',
-        '[attr.role]': '"tablist"',
         '[attr.id]': 'id()'
     },
     hostDirectives: [Bind]
