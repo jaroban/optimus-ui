@@ -133,29 +133,7 @@ export class AccordionPanel extends BaseComponent<AccordionPanelPassThrough> {
     selector: 'p-accordion-header, p-accordionheader',
     imports: [CommonModule, ChevronDownIcon, ChevronUpIcon, BindModule],
     standalone: true,
-    template: `
-        <ng-content />
-        @if (toggleicon) {
-            <ng-template *ngTemplateOutlet="toggleicon; context: { active: active() }"></ng-template>
-        } @else {
-            @if (active()) {
-                @if (pcAccordion.collapseIcon) {
-                    <span [class]="cn(cx('toggleicon'), pcAccordion.collapseIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
-                }
-                @if (!pcAccordion.collapseIcon) {
-                    <svg data-p-icon="chevron-up" [class]="cx('toggleicon')" [pBind]="ptm('toggleicon')" [attr.aria-hidden]="true" />
-                }
-            }
-            @if (!active()) {
-                @if (pcAccordion.expandIcon) {
-                    <span [class]="cn(cx('toggleicon'), pcAccordion.expandIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
-                }
-                @if (!pcAccordion.expandIcon) {
-                    <svg data-p-icon="chevron-down" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')" />
-                }
-            }
-        }
-    `,
+    templateUrl: './accordionheader.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
@@ -340,15 +318,7 @@ export class AccordionHeader extends BaseComponent<AccordionHeaderPassThrough> {
     selector: 'p-accordion-content, p-accordioncontent',
     imports: [BindModule, MotionModule],
     standalone: true,
-    template: `
-        <p-motion [visible]="active()" name="p-collapsible" hideStrategy="visibility" [mountOnEnter]="false" [unmountOnLeave]="false" [options]="computedMotionOptions()">
-            <div [pBind]="ptm('contentWrapper', ptParams())" [class]="cx('contentWrapper')">
-                <div [pBind]="ptm('content', ptParams())" [class]="cx('content')">
-                    <ng-content />
-                </div>
-            </div>
-        </p-motion>
-    `,
+    templateUrl: './accordioncontent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {

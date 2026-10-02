@@ -17,12 +17,7 @@ const OVERLAYBADGE_INSTANCE = new InjectionToken<OverlayBadge>('OVERLAYBADGE_INS
     selector: 'p-overlayBadge, p-overlay-badge, p-overlaybadge',
     standalone: true,
     imports: [BadgeModule, SharedModule, Bind],
-    template: `
-        <div [class]="cx('root')" [pBind]="ptm('root')">
-            <ng-content></ng-content>
-            <p-badge [pt]="ptm('pcBadge')" [styleClass]="styleClass" [style]="style" [badgeSize]="badgeSize" [severity]="severity" [value]="value" [badgeDisabled]="badgeDisabled" />
-        </div>
-    `,
+    templateUrl: './overlaybadge.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [OverlayBadgeStyle, { provide: OVERLAYBADGE_INSTANCE, useExisting: OverlayBadge }, { provide: PARENT_INSTANCE, useExisting: OverlayBadge }],

@@ -25,36 +25,7 @@ export const KNOB_VALUE_ACCESSOR: any = {
     selector: 'p-knob',
     standalone: true,
     imports: [SharedModule, BindModule],
-    template: `
-        <svg
-            viewBox="0 0 100 100"
-            role="slider"
-            [style.width]="size + 'px'"
-            [style.height]="size + 'px'"
-            (click)="onClick($event)"
-            (keydown)="onKeyDown($event)"
-            (mousedown)="onMouseDown($event)"
-            (mouseup)="onMouseUp($event)"
-            (touchstart)="onTouchStart($event)"
-            (touchend)="onTouchEnd($event)"
-            [attr.aria-valuemin]="min"
-            [attr.aria-valuemax]="max"
-            [attr.required]="required() ? '' : undefined"
-            [attr.aria-valuenow]="_value"
-            [attr.aria-labelledby]="ariaLabelledBy"
-            [attr.aria-label]="ariaLabel"
-            [attr.tabindex]="readonly || $disabled() ? -1 : tabindex"
-            [pBind]="ptm('svg')"
-        >
-            <path [attr.d]="rangePath()" [attr.stroke-width]="strokeWidth" [attr.stroke]="rangeColor" [class]="cx('range')" [pBind]="ptm('range')"></path>
-            <path [attr.d]="valuePath()" [attr.stroke-width]="strokeWidth" [attr.stroke]="valueColor" [class]="cx('value')" [pBind]="ptm('value')"></path>
-            @if (showValue) {
-                <text [attr.x]="50" [attr.y]="57" text-anchor="middle" [attr.fill]="textColor" [class]="cx('text')" [attr.name]="name()" [pBind]="ptm('text')">
-                    {{ valueToDisplay() }}
-                </text>
-            }
-        </svg>
-    `,
+    templateUrl: './knob.html',
     providers: [KNOB_VALUE_ACCESSOR, KnobStyle, { provide: KNOB_INSTANCE, useExisting: Knob }, { provide: PARENT_INSTANCE, useExisting: Knob }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,

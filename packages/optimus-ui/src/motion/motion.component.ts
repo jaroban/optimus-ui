@@ -18,11 +18,7 @@ const MOTION_INSTANCE = new InjectionToken<Motion>('MOTION_INSTANCE');
     selector: 'p-motion',
     standalone: true,
     imports: [BindModule],
-    template: `
-        @if (rendered()) {
-            <ng-content />
-        }
-    `,
+    templateUrl: './motion.html',
     providers: [MotionStyle, { provide: MOTION_INSTANCE, useExisting: Motion }, { provide: PARENT_INSTANCE, useExisting: Motion }],
     host: {
         '[class]': "cx('root')"

@@ -79,31 +79,7 @@ export class RadioControlRegistry {
     selector: 'p-radioButton, p-radiobutton, p-radio-button',
     standalone: true,
     imports: [AutoFocus, SharedModule, BindModule],
-    template: `
-        <input
-            #input
-            [attr.id]="inputId"
-            type="radio"
-            [class]="cx('input')"
-            [attr.name]="name()"
-            [attr.required]="required() ? '' : undefined"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            [checked]="checked"
-            [attr.value]="modelValue()"
-            [attr.aria-labelledby]="ariaLabelledBy"
-            [attr.aria-label]="ariaLabel"
-            [attr.aria-checked]="checked"
-            [attr.tabindex]="tabindex"
-            (focus)="onInputFocus($event)"
-            (blur)="onInputBlur($event)"
-            (change)="onChange($event)"
-            [pAutoFocus]="autofocus"
-            [pBind]="ptm('input')"
-        />
-        <div [class]="cx('box')" [pBind]="ptm('box')">
-            <div [class]="cx('icon')" [pBind]="ptm('icon')"></div>
-        </div>
-    `,
+    templateUrl: './radiobutton.html',
     providers: [RADIO_VALUE_ACCESSOR, RadioButtonStyle, { provide: RADIOBUTTON_INSTANCE, useExisting: RadioButton }, { provide: PARENT_INSTANCE, useExisting: RadioButton }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {

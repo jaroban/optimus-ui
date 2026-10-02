@@ -41,78 +41,7 @@ const PANEL_INSTANCE = new InjectionToken<Panel>('PANEL_INSTANCE');
     selector: 'p-panel',
     standalone: true,
     imports: [CommonModule, PlusIcon, MinusIcon, ButtonModule, SharedModule, BindModule, MotionModule],
-    template: `
-        @if (showHeader) {
-            <div [pBind]="ptm('header')" [class]="cx('header')" (click)="onHeaderClick($event)" [attr.id]="id + '-titlebar'" [attr.data-p]="dataP">
-                @if (_header) {
-                    <span [pBind]="ptm('title')" [class]="cx('title')" [attr.id]="id + '_header'">{{ _header }}</span>
-                }
-                <ng-content select="p-header"></ng-content>
-                <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
-                <div [pBind]="ptm('headerActions')" [class]="cx('headerActions')">
-                    <ng-template *ngTemplateOutlet="iconsTemplate || _iconsTemplate"></ng-template>
-                    @if (toggleable) {
-                        <p-button
-                            [attr.id]="id + '_header'"
-                            severity="secondary"
-                            [text]="true"
-                            [rounded]="true"
-                            type="button"
-                            role="button"
-                            [styleClass]="cx('pcToggleButton')"
-                            [attr.aria-label]="buttonAriaLabel"
-                            [attr.aria-controls]="id + '_content'"
-                            [attr.aria-expanded]="!collapsed"
-                            (click)="onIconClick($event)"
-                            (keydown)="onKeyDown($event)"
-                            [buttonProps]="toggleButtonProps"
-                            [pt]="ptm('pcToggleButton')"
-                            [unstyled]="unstyled()"
-                        >
-                            <ng-template #icon>
-                                @if (!headerIconsTemplate && !_headerIconsTemplate && !toggleButtonProps?.icon) {
-                                    @if (!collapsed) {
-                                        <svg data-p-icon="minus" [pBind]="ptm('pcToggleButton.icon')" />
-                                    }
-                                    @if (collapsed) {
-                                        <svg data-p-icon="plus" [pBind]="ptm('pcToggleButton.icon')" />
-                                    }
-                                }
-                                <ng-template *ngTemplateOutlet="headerIconsTemplate || _headerIconsTemplate; context: { $implicit: collapsed }"></ng-template>
-                            </ng-template>
-                        </p-button>
-                    }
-                </div>
-            </div>
-        }
-        <div
-            [pBind]="ptm('contentContainer')"
-            [pMotion]="!toggleable || (toggleable && !collapsed)"
-            pMotionName="p-collapsible"
-            [pMotionOptions]="computedMotionOptions()"
-            [class]="cx('contentContainer')"
-            [id]="id + '_content'"
-            role="region"
-            [attr.aria-labelledby]="id + '_header'"
-            [attr.aria-hidden]="collapsed"
-            [attr.tabindex]="collapsed ? '-1' : undefined"
-            (pMotionOnAfterEnter)="onToggleDone($event)"
-        >
-            <div [pBind]="ptm('contentWrapper')" [class]="cx('contentWrapper')">
-                <div [pBind]="ptm('content')" [class]="cx('content')" #contentWrapper>
-                    <ng-content></ng-content>
-                    <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
-                </div>
-
-                @if (footerFacet || footerTemplate || _footerTemplate) {
-                    <div [pBind]="ptm('footer')" [class]="cx('footer')">
-                        <ng-content select="p-footer"></ng-content>
-                        <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
-                    </div>
-                }
-            </div>
-        </div>
-    `,
+    templateUrl: './panel.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [PanelStyle, { provide: PANEL_INSTANCE, useExisting: Panel }, { provide: PARENT_INSTANCE, useExisting: Panel }],

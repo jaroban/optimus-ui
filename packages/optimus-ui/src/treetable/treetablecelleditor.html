@@ -1,0 +1,5 @@
+@if (tt.editingCell === editableColumn.el.nativeElement) {
+<ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+} @if (!tt.editingCell || tt.editingCell !== editableColumn.el.nativeElement) {
+<ng-container *ngTemplateOutlet="outputTemplate"></ng-container>
+}
