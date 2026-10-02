@@ -1,6 +1,6 @@
 {
     "name": "@openng/optimus-ui-tailwindcss",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "author": "OpenNg",
     "description": "Tailwind CSS utilities for Optimus UI Libraries",
     "homepage": "https://www.openng.org/",
@@ -60,6 +60,6 @@
         "tailwindcss": ">=3.1.0"
     },
     "devDependencies": {
-        "tailwindcss": "^3.4.10"
+        "tailwindcss": "^3.4.19"
     }
 }
