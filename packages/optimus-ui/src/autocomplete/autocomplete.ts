@@ -6,6 +6,7 @@ import {
     computed,
     ContentChild,
     ContentChildren,
+    EmbeddedViewRef,
     ElementRef,
     EventEmitter,
     forwardRef,
@@ -72,260 +73,7 @@ export const AUTOCOMPLETE_VALUE_ACCESSOR: any = {
     selector: 'p-autoComplete, p-autocomplete, p-auto-complete',
     standalone: true,
     imports: [CommonModule, Overlay, InputText, Ripple, Scroller, AutoFocus, TimesCircleIcon, SpinnerIcon, ChevronDownIcon, Chip, SharedModule, TimesIcon, BindModule],
-    template: `
-        <input
-            *ngIf="!multiple"
-            #focusInput
-            [pAutoFocus]="autofocus"
-            pInputText
-            [pt]="ptm('pcInputText')"
-            [class]="cn(cx('pcInputText'), inputStyleClass)"
-            [ngStyle]="inputStyle"
-            [attr.type]="type"
-            [attr.value]="inputValue()"
-            [variant]="$variant()"
-            [invalid]="invalid()"
-            [attr.id]="inputId"
-            [attr.autocomplete]="autocomplete"
-            aria-autocomplete="list"
-            role="combobox"
-            [attr.placeholder]="placeholder"
-            [attr.name]="name()"
-            [attr.minlength]="minlength()"
-            [pSize]="size()"
-            [attr.min]="min()"
-            [attr.max]="max()"
-            [attr.pattern]="pattern()"
-            [attr.size]="inputSize()"
-            [attr.maxlength]="maxlength()"
-            [attr.tabindex]="!$disabled() ? tabindex : -1"
-            [attr.required]="required() ? '' : undefined"
-            [attr.readonly]="readonly ? '' : undefined"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            [attr.aria-label]="ariaLabel"
-            [attr.aria-labelledby]="ariaLabelledBy"
-            [attr.aria-required]="required()"
-            [attr.aria-expanded]="overlayVisible ?? false"
-            [attr.aria-controls]="overlayVisible ? id + '_list' : null"
-            [attr.aria-activedescendant]="focused ? focusedOptionId : undefined"
-            (input)="onInput($event)"
-            (keydown)="onKeyDown($event)"
-            (change)="onInputChange($event)"
-            (focus)="onInputFocus($event)"
-            (blur)="onInputBlur($event)"
-            (paste)="onInputPaste($event)"
-            (keyup)="onInputKeyUp($event)"
-            [fluid]="hasFluid"
-            [pInputTextUnstyled]="unstyled()"
-        />
-        <ng-container *ngIf="$filled() && !$disabled() && showClear && !loading">
-            <svg data-p-icon="times" *ngIf="!clearIconTemplate && !_clearIconTemplate" [pBind]="ptm('clearIcon')" [class]="cx('clearIcon')" (click)="clear()" [attr.aria-hidden]="true" />
-            <span *ngIf="clearIconTemplate || _clearIconTemplate" [pBind]="ptm('clearIcon')" [class]="cx('clearIcon')" (click)="clear()" [attr.aria-hidden]="true">
-                <ng-template *ngTemplateOutlet="clearIconTemplate || _clearIconTemplate"></ng-template>
-            </span>
-        </ng-container>
-
-        <ul
-            *ngIf="multiple"
-            #multiContainer
-            [pBind]="ptm('inputMultiple')"
-            [class]="cx('inputMultiple')"
-            [attr.data-p]="inputMultipleDataP"
-            [tabindex]="-1"
-            role="listbox"
-            [attr.aria-orientation]="'horizontal'"
-            [attr.aria-activedescendant]="focused ? focusedMultipleOptionId : undefined"
-            (focus)="onMultipleContainerFocus($event)"
-            (blur)="onMultipleContainerBlur($event)"
-            (keydown)="onMultipleContainerKeyDown($event)"
-        >
-            <li
-                #token
-                *ngFor="let option of modelValue(); let i = index"
-                [pBind]="ptm('chipItem')"
-                [class]="cx('chipItem', { i })"
-                [attr.id]="id + '_multiple_option_' + i"
-                role="option"
-                [attr.aria-label]="getOptionLabel(option)"
-                [attr.aria-setsize]="modelValue().length"
-                [attr.aria-posinset]="i + 1"
-                [attr.aria-selected]="true"
-            >
-                <p-chip
-                    [pt]="ptm('pcChip')"
-                    [class]="cx('pcChip')"
-                    [label]="!selectedItemTemplate && !_selectedItemTemplate && getOptionLabel(option)"
-                    [disabled]="$disabled()"
-                    [removable]="true"
-                    (onRemove)="!readonly ? removeOption($event, i) : ''"
-                    [unstyled]="unstyled()"
-                >
-                    <ng-container *ngTemplateOutlet="selectedItemTemplate || _selectedItemTemplate; context: { $implicit: option }"></ng-container>
-                    <ng-template #removeicon>
-                        <span *ngIf="!removeIconTemplate && !_removeIconTemplate" [pBind]="ptm('chipIcon')" [class]="cx('chipIcon')" (click)="!readonly && !$disabled() ? removeOption($event, i) : ''">
-                            <svg data-p-icon="times-circle" [class]="cx('chipIcon')" [attr.aria-hidden]="true" />
-                        </span>
-                        <span *ngIf="removeIconTemplate || _removeIconTemplate" [pBind]="ptm('chipIcon')" [attr.aria-hidden]="true">
-                            <ng-template *ngTemplateOutlet="removeIconTemplate || _removeIconTemplate; context: { removeCallback: removeOption.bind(this), index: i, class: cx('chipIcon') }"></ng-template>
-                        </span>
-                    </ng-template>
-                </p-chip>
-            </li>
-            <li [pBind]="ptm('inputChip')" [class]="cx('inputChip')" role="option">
-                <input
-                    #focusInput
-                    #multiIn
-                    [pAutoFocus]="autofocus"
-                    [pBind]="ptm('input')"
-                    [class]="cx('pcInputText')"
-                    [ngStyle]="inputStyle"
-                    [attr.type]="type"
-                    [attr.id]="inputId"
-                    [attr.autocomplete]="autocomplete"
-                    [attr.name]="name()"
-                    [attr.minlength]="minlength()"
-                    [attr.maxlength]="maxlength()"
-                    [attr.size]="size()"
-                    [attr.min]="min()"
-                    [attr.max]="max()"
-                    [attr.pattern]="pattern()"
-                    role="combobox"
-                    [attr.placeholder]="!$filled() ? placeholder : null"
-                    aria-autocomplete="list"
-                    [attr.tabindex]="!$disabled() ? tabindex : -1"
-                    [attr.required]="required() ? '' : undefined"
-                    [attr.readonly]="readonly ? '' : undefined"
-                    [attr.disabled]="$disabled() ? '' : undefined"
-                    [attr.aria-label]="ariaLabel"
-                    [attr.aria-labelledby]="ariaLabelledBy"
-                    [attr.aria-required]="required()"
-                    [attr.aria-expanded]="overlayVisible ?? false"
-                    [attr.aria-controls]="overlayVisible ? id + '_list' : null"
-                    [attr.aria-activedescendant]="focused ? focusedOptionId : undefined"
-                    (input)="onInput($event)"
-                    (keydown)="onKeyDown($event)"
-                    (change)="onInputChange($event)"
-                    (focus)="onInputFocus($event)"
-                    (blur)="onInputBlur($event)"
-                    (paste)="onInputPaste($event)"
-                    (keyup)="onInputKeyUp($event)"
-                />
-            </li>
-        </ul>
-        <ng-container *ngIf="loading">
-            <svg data-p-icon="spinner" *ngIf="!loadingIconTemplate && !_loadingIconTemplate" [pBind]="ptm('loader')" [class]="cx('loader')" [spin]="true" [attr.aria-hidden]="true" />
-            <span *ngIf="loadingIconTemplate || _loadingIconTemplate" [pBind]="ptm('loader')" [class]="cx('loader')" [attr.aria-hidden]="true">
-                <ng-template *ngTemplateOutlet="loadingIconTemplate || _loadingIconTemplate"></ng-template>
-            </span>
-        </ng-container>
-        <button #ddBtn type="button" [pBind]="ptm('dropdown')" [attr.aria-label]="dropdownAriaLabel" [class]="cx('dropdown')" [disabled]="$disabled()" pRipple (click)="handleDropdownClick($event)" *ngIf="dropdown" [attr.tabindex]="tabindex">
-            <span *ngIf="dropdownIcon" [ngClass]="dropdownIcon" [attr.aria-hidden]="true"></span>
-            <ng-container *ngIf="!dropdownIcon">
-                <svg data-p-icon="chevron-down" [pBind]="ptm('dropdown')" *ngIf="!dropdownIconTemplate && !_dropdownIconTemplate" />
-                <ng-template *ngTemplateOutlet="dropdownIconTemplate || _dropdownIconTemplate"></ng-template>
-            </ng-container>
-        </button>
-        <p-overlay
-            #overlay
-            [hostAttrSelector]="$attrSelector"
-            [(visible)]="overlayVisible"
-            [options]="overlayOptions"
-            [target]="'@parent'"
-            [appendTo]="$appendTo()"
-            [unstyled]="unstyled()"
-            [pt]="ptm('pcOverlay')"
-            [motionOptions]="motionOptions()"
-            (onBeforeEnter)="onOverlayBeforeEnter()"
-            (onHide)="hide()"
-            [attr.data-p]="overlayDataP"
-        >
-            <ng-template #content>
-                <div [pBind]="ptm('overlay')" [class]="cn(cx('overlay'), panelStyleClass)" [ngStyle]="panelStyle">
-                    <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
-                    <div [pBind]="ptm('listContainer')" [class]="cx('listContainer')" [style.max-height]="virtualScroll ? 'auto' : scrollHeight" [tabindex]="-1">
-                        <p-scroller
-                            *ngIf="virtualScroll"
-                            #scroller
-                            [tabindex]="-1"
-                            [pt]="ptm('virtualScroller')"
-                            [items]="visibleOptions()"
-                            [style]="{ height: scrollHeight }"
-                            [itemSize]="virtualScrollItemSize"
-                            [autoSize]="true"
-                            [lazy]="lazy"
-                            (onLazyLoad)="onLazyLoad.emit($event)"
-                            [options]="virtualScrollOptions"
-                        >
-                            <ng-template #content let-items let-scrollerOptions="options">
-                                <ng-container *ngTemplateOutlet="buildInItems; context: { $implicit: items, options: scrollerOptions }"></ng-container>
-                            </ng-template>
-                            <ng-container *ngIf="loaderTemplate || _loaderTemplate">
-                                <ng-template #loader let-scrollerOptions="options">
-                                    <ng-container *ngTemplateOutlet="loaderTemplate || _loaderTemplate; context: { options: scrollerOptions }"></ng-container>
-                                </ng-template>
-                            </ng-container>
-                        </p-scroller>
-                        <ng-container *ngIf="!virtualScroll">
-                            <ng-container *ngTemplateOutlet="buildInItems; context: { $implicit: visibleOptions(), options: {} }"></ng-container>
-                        </ng-container>
-                    </div>
-
-                    <ng-template #buildInItems let-items let-scrollerOptions="options">
-                        <ul #items [pBind]="ptm('list')" [class]="cn(cx('list'), scrollerOptions.contentStyleClass)" [style]="scrollerOptions.contentStyle" role="listbox" [attr.id]="id + '_list'" [attr.aria-label]="listLabel">
-                            <ng-template ngFor let-option [ngForOf]="items" let-i="index">
-                                <ng-container *ngIf="isOptionGroup(option)">
-                                    <li [pBind]="ptm('optionGroup')" [attr.id]="id + '_' + getOptionIndex(i, scrollerOptions)" [class]="cx('optionGroup')" [ngStyle]="{ height: scrollerOptions.itemSize + 'px' }" role="option">
-                                        <span *ngIf="!groupTemplate">{{ getOptionGroupLabel(option.optionGroup) }}</span>
-                                        <ng-container *ngTemplateOutlet="groupTemplate; context: { $implicit: option.optionGroup }"></ng-container>
-                                    </li>
-                                </ng-container>
-                                <ng-container *ngIf="!isOptionGroup(option)">
-                                    <li
-                                        pRipple
-                                        [pBind]="getPTOptions(option, scrollerOptions, i, 'option')"
-                                        [ngStyle]="{ height: scrollerOptions.itemSize + 'px' }"
-                                        [class]="cx('option', { option, i, scrollerOptions })"
-                                        [attr.id]="id + '_' + getOptionIndex(i, scrollerOptions)"
-                                        role="option"
-                                        [attr.aria-label]="getOptionLabel(option)"
-                                        [attr.aria-selected]="isSelected(option)"
-                                        [attr.data-p-selected]="isSelected(option)"
-                                        [attr.aria-disabled]="isOptionDisabled(option)"
-                                        [attr.data-p-focused]="focusedOptionIndex() === getOptionIndex(i, scrollerOptions)"
-                                        [attr.aria-setsize]="ariaSetSize"
-                                        [attr.aria-posinset]="getAriaPosInset(getOptionIndex(i, scrollerOptions))"
-                                        (click)="onOptionSelect($event, option)"
-                                        (mouseenter)="onOptionMouseEnter($event, getOptionIndex(i, scrollerOptions))"
-                                    >
-                                        <span *ngIf="!itemTemplate && !_itemTemplate">{{ getOptionLabel(option) }}</span>
-                                        <ng-container
-                                            *ngTemplateOutlet="
-                                                itemTemplate || _itemTemplate;
-                                                context: {
-                                                    $implicit: option,
-                                                    index: scrollerOptions.getOptions ? scrollerOptions.getOptions(i) : i
-                                                }
-                                            "
-                                        ></ng-container>
-                                    </li>
-                                </ng-container>
-                            </ng-template>
-                            <li *ngIf="!items || (items && items.length === 0 && showEmptyMessage)" [pBind]="ptm('emptyMessage')" [class]="cx('emptyMessage')" [ngStyle]="{ height: scrollerOptions.itemSize + 'px' }" role="option">
-                                <ng-container *ngIf="!emptyTemplate && !_emptyTemplate; else empty">
-                                    {{ searchResultMessageText }}
-                                </ng-container>
-                                <ng-container #empty *ngTemplateOutlet="emptyTemplate || _emptyTemplate"></ng-container>
-                            </li>
-                        </ul>
-                    </ng-template>
-                    <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
-                </div>
-                <span role="status" aria-live="polite" class="p-hidden-accessible">
-                    {{ selectedMessageText }}
-                </span>
-            </ng-template>
-        </p-overlay>
-    `,
+    templateUrl: './autocomplete.html',
     providers: [AUTOCOMPLETE_VALUE_ACCESSOR, AutoCompleteStyle, { provide: AUTOCOMPLETE_INSTANCE, useExisting: AutoComplete }, { provide: PARENT_INSTANCE, useExisting: AutoComplete }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
@@ -336,7 +84,7 @@ export const AUTOCOMPLETE_VALUE_ACCESSOR: any = {
     },
     hostDirectives: [Bind]
 })
-export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
+export class AutoComplete<T = any> extends BaseInput<AutoCompletePassThrough> {
     componentName = 'AutoComplete';
 
     $pcAutoComplete: AutoComplete | undefined = inject(AUTOCOMPLETE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
@@ -572,11 +320,11 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
      * An array of suggestions to display.
      * @group Props
      */
-    @Input() get suggestions(): any[] {
+    @Input() get suggestions(): T[] {
         return this._suggestions();
     }
 
-    set suggestions(value: any[]) {
+    set suggestions(value: T[]) {
         this._suggestions.set(value);
         this.handleSuggestionsChange();
     }
@@ -585,12 +333,12 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
      * Property name or getter function to use as the label of an option.
      * @group Props
      */
-    @Input() optionLabel: string | ((item: any) => string) | undefined;
+    @Input() optionLabel: string | ((item: T) => string) | undefined;
     /**
      * Property name or getter function to use as the value of an option.
      * @group Props
      */
-    @Input() optionValue: string | ((item: any) => string) | undefined;
+    @Input() optionValue: string | ((item: T) => string) | undefined;
     /**
      * Unique identifier of the component.
      * @group Props
@@ -633,7 +381,7 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
      * Property name or getter function to use as the disabled flag of an option, defaults to false when not defined.
      * @group Props
      */
-    @Input() optionDisabled: string | ((item: any) => string) | undefined;
+    @Input() optionDisabled: string | ((item: T) => string) | undefined;
     /**
      * When enabled, the hovered option will be focused.
      * @group Props
@@ -678,13 +426,13 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
      * @param {AutoCompleteSelectEvent} event - custom select event.
      * @group Emits
      */
-    @Output() onSelect: EventEmitter<AutoCompleteSelectEvent> = new EventEmitter<AutoCompleteSelectEvent>();
+    @Output() onSelect: EventEmitter<AutoCompleteSelectEvent<T>> = new EventEmitter<AutoCompleteSelectEvent<T>>();
     /**
      * Callback to invoke when a selected value is removed.
      * @param {AutoCompleteUnselectEvent} event - custom unselect event.
      * @group Emits
      */
-    @Output() onUnselect: EventEmitter<AutoCompleteUnselectEvent> = new EventEmitter<AutoCompleteUnselectEvent>();
+    @Output() onUnselect: EventEmitter<AutoCompleteUnselectEvent<T>> = new EventEmitter<AutoCompleteUnselectEvent<T>>();
     /**
      * Callback to invoke when an item is added via addOnBlur or separator features.
      * @param {AutoCompleteAddEvent} event - Custom add event.
@@ -885,6 +633,8 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
 
     focusedOptionIndex = signal<number>(-1);
 
+    selectedItemTemplateLabel = signal<string | null>(null);
+
     _componentStyle = inject(AutoCompleteStyle);
 
     $appendTo = computed(() => this.appendTo() || this.config.overlayAppendTo());
@@ -895,10 +645,16 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
 
     inputValue = computed(() => {
         const modelValue = this.modelValue();
-        const selectedOption = this.optionValueSelected ? (this.suggestions || []).find((option: any) => equals(option, modelValue, this.equalityKey())) : modelValue;
+        const selectedOption = this.optionValueSelected ? (this.suggestions || []).find((option: any) => this.isOptionEqualToValue(option, modelValue)) : modelValue;
 
         if (isNotEmpty(modelValue)) {
             if (typeof modelValue === 'object' || this.optionValueSelected) {
+                const selectedItemTemplateLabel = this.selectedItemTemplateLabel();
+
+                if (selectedItemTemplateLabel) {
+                    return selectedItemTemplateLabel;
+                }
+
                 const label = this.getOptionLabel(selectedOption);
 
                 return label != null ? label : modelValue;
@@ -955,7 +711,7 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
     }
 
     get optionValueSelected() {
-        return typeof this.modelValue() === 'string' && this.optionValue;
+        return this.isResolvedOptionValue(this.modelValue());
     }
 
     chipItemClass(index) {
@@ -1131,9 +887,25 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
 
     isSelected(option) {
         if (this.multiple) {
-            return this.unique ? (this.modelValue() as string[])?.some((model) => equals(model, option, this.equalityKey())) : false;
+            return this.unique ? (this.modelValue() as any[])?.some((model) => this.isOptionEqualToValue(option, model)) : false;
         }
-        return equals(this.modelValue(), option, this.equalityKey());
+        return this.isOptionEqualToValue(option, this.modelValue());
+    }
+
+    /**
+     * Whether the model holds a value produced by `optionValue` (a primitive) rather than an option object.
+     * This happens when a value is written before the matching option is available in the suggestions.
+     */
+    private isResolvedOptionValue(value: any): boolean {
+        return !!this.optionValue && value != null && typeof value !== 'object';
+    }
+
+    /**
+     * Whether an option corresponds to a model value, regardless of whether the model holds
+     * the option object itself or the value resolved through `optionValue`.
+     */
+    private isOptionEqualToValue(option: any, value: any): boolean {
+        return equals(value, option, this.equalityKey()) || (this.isResolvedOptionValue(value) && equals(this.getOptionValue(option), value));
     }
 
     isOptionMatched(option, value) {
@@ -1661,6 +1433,7 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
         }
 
         this.value = value;
+        this.updateSelectedItemTemplateLabel(options);
         this.writeModelValue(options);
         this.onModelChange(value);
         this.updateInputValue();
@@ -1793,6 +1566,32 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
         return this.optionLabel ? resolveFieldData(option, this.optionLabel) : option && option.label != undefined ? option.label : option;
     }
 
+    getSelectedItemTemplateLabel(option: any) {
+        const template = this.selectedItemTemplate || this._selectedItemTemplate;
+
+        if (!template || option == null) {
+            return null;
+        }
+
+        const embeddedView: EmbeddedViewRef<AutoCompleteSelectedItemTemplateContext> = template.createEmbeddedView({ $implicit: option });
+
+        embeddedView.detectChanges();
+
+        const label = embeddedView.rootNodes
+            .map((node: Node) => node.textContent || '')
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        embeddedView.destroy();
+
+        return label || null;
+    }
+
+    updateSelectedItemTemplateLabel(option: any) {
+        this.selectedItemTemplateLabel.set(!this.multiple ? this.getSelectedItemTemplateLabel(option) : null);
+    }
+
     getOptionValue(option) {
         return this.optionValue ? resolveFieldData(option, this.optionValue) : option;
     }
@@ -1876,19 +1675,29 @@ export class AutoComplete extends BaseInput<AutoCompletePassThrough> {
      * Writes the value to the control.
      */
     writeControlValue(value: any, setModelValue: (value: any) => void): void {
+        let resolvedValue = value;
+
         if (this.multiple) {
             const resolved = (value || []).map((val: any) => {
-                const match = this.visibleOptions().find((option: any) => equals(val, option, this.equalityKey()));
+                const match = this.visibleOptions().find((option: any) => this.isOptionEqualToValue(option, val));
                 return match ?? val;
             });
-            setModelValue(isEmpty(value) ? value : resolved);
+            resolvedValue = isEmpty(value) ? value : resolved;
         } else {
-            const option = this.visibleOptions().find((option: any) => equals(value, option, this.equalityKey()));
-            setModelValue(isEmpty(option) ? value : option);
+            const option = this.visibleOptions().find((option: any) => this.isOptionEqualToValue(option, value));
+            resolvedValue = isEmpty(option) ? value : option;
         }
 
+        setModelValue(resolvedValue);
         this.value = value;
         this.updateInputValue();
+
+        queueMicrotask(() => {
+            this.updateSelectedItemTemplateLabel(resolvedValue);
+            this.updateInputValue();
+            this.cd.markForCheck();
+        });
+
         this.cd.markForCheck();
     }
 

@@ -40,83 +40,7 @@ const TOAST_INSTANCE = new InjectionToken<Toast>('TOAST_INSTANCE');
     selector: 'p-toastItem',
     standalone: true,
     imports: [CommonModule, CheckIcon, ExclamationTriangleIcon, InfoCircleIcon, TimesIcon, TimesCircleIcon, SharedModule, Bind, MotionModule],
-    template: `
-        <div
-            #container
-            [pMotion]="visible()"
-            [pMotionAppear]="true"
-            [pMotionName]="'p-toast-message'"
-            [pMotionOptions]="motionOptions()"
-            (pMotionOnBeforeEnter)="onBeforeEnter($event)"
-            (pMotionOnAfterLeave)="onAfterLeave($event)"
-            [attr.id]="message?.id"
-            [pBind]="ptm('message')"
-            [class]="cn(cx('message'), message?.styleClass)"
-            (mouseenter)="onMouseEnter()"
-            (mouseleave)="onMouseLeave()"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            [attr.data-p]="dataP"
-        >
-            @if (headlessTemplate) {
-                <ng-container *ngTemplateOutlet="headlessTemplate; context: { $implicit: message, closeFn: onCloseIconClick }"></ng-container>
-            } @else {
-                <div [pBind]="ptm('messageContent')" [class]="cn(cx('messageContent'), message?.contentStyleClass)">
-                    <ng-container *ngIf="!template">
-                        @if (message.icon) {
-                            <span [pBind]="ptm('messageIcon')" [class]="cn(cx('messageIcon'), message?.icon)"></span>
-                        } @else {
-                            @switch (message.severity) {
-                                @case ('success') {
-                                    <svg [pBind]="ptm('messageIcon')" data-p-icon="check" [class]="cx('messageIcon')" [attr.aria-hidden]="true" />
-                                }
-                                @case ('info') {
-                                    <svg [pBind]="ptm('messageIcon')" data-p-icon="info-circle" [class]="cx('messageIcon')" [attr.aria-hidden]="true" />
-                                }
-                                @case ('error') {
-                                    <svg [pBind]="ptm('messageIcon')" data-p-icon="times-circle" [class]="cx('messageIcon')" [attr.aria-hidden]="true" />
-                                }
-                                @case ('warn') {
-                                    <svg [pBind]="ptm('messageIcon')" data-p-icon="exclamation-triangle" [class]="cx('messageIcon')" [attr.aria-hidden]="true" />
-                                }
-                                @default {
-                                    <svg [pBind]="ptm('messageIcon')" data-p-icon="info-circle" [class]="cx('messageIcon')" [attr.aria-hidden]="true" />
-                                }
-                            }
-                        }
-                        <div [pBind]="ptm('messageText')" [ngClass]="cx('messageText')" [attr.data-p]="dataP">
-                            <div [pBind]="ptm('summary')" [ngClass]="cx('summary')" [attr.data-p]="dataP">
-                                {{ message.summary }}
-                            </div>
-                            <div [pBind]="ptm('detail')" [ngClass]="cx('detail')" [attr.data-p]="dataP">{{ message.detail }}</div>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngTemplateOutlet="template; context: { $implicit: message }"></ng-container>
-                    @if (message?.closable !== false) {
-                        <div>
-                            <button
-                                [pBind]="ptm('closeButton')"
-                                type="button"
-                                [attr.class]="cx('closeButton')"
-                                (click)="onCloseIconClick($event)"
-                                (keydown.enter)="onCloseIconClick($event)"
-                                [attr.aria-label]="closeAriaLabel"
-                                autofocus
-                                [attr.data-p]="dataP"
-                            >
-                                @if (message.closeIcon) {
-                                    <span [pBind]="ptm('closeIcon')" *ngIf="message.closeIcon" [class]="cn(cx('closeIcon'), message?.closeIcon)"></span>
-                                } @else {
-                                    <svg [pBind]="ptm('closeIcon')" data-p-icon="times" [class]="cx('closeIcon')" [attr.aria-hidden]="true" />
-                                }
-                            </button>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-    `,
+    templateUrl: './toastitem.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [ToastStyle]
@@ -256,23 +180,7 @@ export class ToastItem extends BaseComponent<ToastPassThrough> {
     selector: 'p-toast',
     standalone: true,
     imports: [CommonModule, ToastItem, SharedModule],
-    template: `
-        <p-toastItem
-            *ngFor="let msg of messages; let i = index"
-            [message]="msg"
-            [index]="i"
-            [life]="life"
-            [clearAll]="clearAllTrigger()"
-            (onClose)="onMessageClose($event)"
-            (onAnimationEnd)="onAnimationEnd()"
-            (onAnimationStart)="onAnimationStart()"
-            [template]="template || _template"
-            [headlessTemplate]="headlessTemplate || _headlessTemplate"
-            [pt]="pt"
-            [unstyled]="unstyled()"
-            [motionOptions]="computedMotionOptions()"
-        ></p-toastItem>
-    `,
+    templateUrl: './toast.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [ToastStyle, { provide: TOAST_INSTANCE, useExisting: Toast }, { provide: PARENT_INSTANCE, useExisting: Toast }],

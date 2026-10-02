@@ -22,35 +22,7 @@ const SCROLLTOP_INSTANCE = new InjectionToken<ScrollTop>('SCROLLTOP_INSTANCE');
     selector: 'p-scrollTop, p-scrolltop, p-scroll-top',
     standalone: true,
     imports: [CommonModule, ChevronUpIcon, Button, SharedModule, MotionDirective],
-    template: `
-        @if (render()) {
-            <p-button
-                [pMotion]="visible()"
-                [pMotionAppear]="true"
-                [pMotionName]="'p-scrolltop'"
-                [pMotionOptions]="computedMotionOptions()"
-                (pMotionOnBeforeEnter)="onBeforeEnter($event)"
-                (pMotionOnBeforeLeave)="onBeforeLeave()"
-                (pMotionOnAfterLeave)="onAfterLeave()"
-                [attr.aria-label]="buttonAriaLabel"
-                (click)="onClick()"
-                [pt]="ptm('pcButton')"
-                [styleClass]="cn(cx('root'), styleClass)"
-                [ngStyle]="style"
-                type="button"
-                [buttonProps]="buttonProps"
-                [unstyled]="unstyled()"
-            >
-                <ng-template #icon>
-                    <ng-container *ngIf="!iconTemplate && !_iconTemplate">
-                        <span *ngIf="_icon" [class]="cn(cx('icon'), _icon)"></span>
-                        <svg data-p-icon="chevron-up" *ngIf="!_icon" [class]="cx('icon')" />
-                    </ng-container>
-                    <ng-template [ngIf]="!icon" *ngTemplateOutlet="iconTemplate || _iconTemplate; context: { styleClass: cx('icon') }"></ng-template>
-                </ng-template>
-            </p-button>
-        }
-    `,
+    templateUrl: './scrolltop.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [ScrollTopStyle, { provide: SCROLLTOP_INSTANCE, useExisting: ScrollTop }, { provide: PARENT_INSTANCE, useExisting: ScrollTop }],
