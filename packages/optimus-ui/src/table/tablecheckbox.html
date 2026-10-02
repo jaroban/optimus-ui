@@ -1,0 +1,18 @@
+<p-checkbox
+    [(ngModel)]="checked"
+    [ngModelOptions]="{ standalone: true }"
+    [binary]="true"
+    (onChange)="onClick($event)"
+    [required]="required()"
+    [disabled]="disabled()"
+    [inputId]="inputId()"
+    [name]="name()"
+    [ariaLabel]="ariaLabel"
+    [unstyled]="unstyled()"
+>
+    @if (dataTable.checkboxIconTemplate || dataTable._checkboxIconTemplate; as template) {
+    <ng-template pTemplate="icon">
+        <ng-template *ngTemplateOutlet="template; context: { $implicit: checked }" />
+    </ng-template>
+    }
+</p-checkbox>

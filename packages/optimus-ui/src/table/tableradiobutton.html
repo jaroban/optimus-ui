@@ -1,0 +1,13 @@
+<p-radioButton
+    #rb
+    [(ngModel)]="checked"
+    [ngModelOptions]="{ standalone: true }"
+    [disabled]="disabled()"
+    [inputId]="inputId()"
+    [name]="name()"
+    [ariaLabel]="ariaLabel"
+    [binary]="true"
+    [value]="value"
+    (onClick)="onClick($event)"
+    [unstyled]="unstyled()"
+/>

@@ -82,6 +82,8 @@ export const style = /*css*/ `
     }
 
     .p-tab {
+        display: flex;
+        align-items: center;
         flex-shrink: 0;
         cursor: pointer;
         user-select: none;
@@ -103,6 +105,15 @@ export const style = /*css*/ `
             box-shadow dt('tabs.transition.duration');
         margin: dt('tabs.tab.margin');
         outline-color: transparent;
+    }
+
+    .p-tab.p-disabled {
+        cursor: default;
+        pointer-events: auto;
+    }
+
+    .p-tab.p-disabled .p-ink {
+        display: none;
     }
 
     .p-tab:not(.p-disabled):focus-visible {
