@@ -1,0 +1,27 @@
+<li
+    [id]="id"
+    [pBind]="getPTOptions()"
+    (click)="onOptionClick($event)"
+    (mouseenter)="onOptionMouseEnter($event)"
+    role="option"
+    pRipple
+    [attr.aria-label]="label"
+    [attr.aria-setsize]="ariaSetSize"
+    [attr.aria-posinset]="ariaPosInset"
+    [attr.aria-selected]="selected"
+    [attr.data-p-focused]="focused"
+    [attr.data-p-highlight]="selected"
+    [attr.data-p-selected]="selected"
+    [attr.data-p-disabled]="disabled"
+    [ngStyle]="{ height: scrollerOptions?.itemSize + 'px' }"
+    [class]="cx('option')"
+>
+    @if (checkmark) { @if (selected) {
+    <svg data-p-icon="check" [class]="cx('optionCheckIcon')" [pBind]="$pcSelect?.ptm('optionCheckIcon')"></svg>
+    } @if (!selected) {
+    <svg data-p-icon="blank" [class]="cx('optionBlankIcon')" [pBind]="$pcSelect?.ptm('optionBlankIcon')"></svg>
+    } } @if (!template) {
+    <span [pBind]="$pcSelect?.ptm('optionLabel')">{{ label ?? 'empty' }}</span>
+    }
+    <ng-container *ngTemplateOutlet="template; context: { $implicit: option }"></ng-container>
+</li>

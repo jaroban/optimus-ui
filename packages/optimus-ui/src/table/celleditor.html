@@ -1,0 +1,5 @@
+@if (editing) {
+<ng-container *ngTemplateOutlet="inputTemplate || _inputTemplate"></ng-container>
+} @if (!editing) {
+<ng-container *ngTemplateOutlet="outputTemplate || _outputTemplate"></ng-container>
+}

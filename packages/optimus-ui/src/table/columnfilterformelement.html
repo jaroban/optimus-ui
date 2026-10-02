@@ -1,0 +1,80 @@
+@if (filterTemplate) {
+<ng-container
+    *ngTemplateOutlet="
+                    filterTemplate;
+                    context: {
+                        $implicit: filterConstraint.value,
+                        filterCallback: filterCallback,
+                        type: type,
+                        field: field,
+                        filterConstraint: filterConstraint,
+                        placeholder: placeholder,
+                        minFractionDigits: minFractionDigits,
+                        maxFractionDigits: maxFractionDigits,
+                        prefix: prefix,
+                        suffix: suffix,
+                        locale: locale,
+                        localeMatcher: localeMatcher,
+                        currency: currency,
+                        currencyDisplay: currencyDisplay,
+                        useGrouping: useGrouping,
+                        showButtons: showButtons
+                    }
+                "
+></ng-container>
+} @else { @switch (type) { @case ('text') {
+<input
+    type="text"
+    [ariaLabel]="ariaLabel"
+    pInputText
+    [pt]="ptm('pcFilterInputText')"
+    [value]="filterConstraint?.value"
+    (input)="onModelChange($event.target.value)"
+    (keydown.enter)="onTextInputEnterKeyDown($event)"
+    [attr.placeholder]="placeholder"
+    [unstyled]="unstyled()"
+/>
+} @case ('numeric') {
+<p-inputNumber
+    [ngModel]="filterConstraint?.value"
+    [ngModelOptions]="{ standalone: true }"
+    (ngModelChange)="onModelChange($event)"
+    (onKeyDown)="onNumericInputKeyDown($event)"
+    [showButtons]="showButtons"
+    [minFractionDigits]="minFractionDigits"
+    [maxFractionDigits]="maxFractionDigits"
+    [ariaLabel]="ariaLabel"
+    [prefix]="prefix"
+    [suffix]="suffix"
+    [placeholder]="placeholder"
+    [mode]="currency ? 'currency' : 'decimal'"
+    [locale]="locale"
+    [localeMatcher]="localeMatcher"
+    [currency]="currency"
+    [currencyDisplay]="currencyDisplay"
+    [useGrouping]="useGrouping"
+    [pt]="ptm('pcFilterInputNumber')"
+    [unstyled]="unstyled()"
+></p-inputNumber>
+} @case ('boolean') {
+<p-checkbox
+    [pt]="ptm('pcFilterCheckbox')"
+    [indeterminate]="filterConstraint?.value === null"
+    [binary]="true"
+    [ngModel]="filterConstraint?.value"
+    [ngModelOptions]="{ standalone: true }"
+    (ngModelChange)="onModelChange($event)"
+    [unstyled]="unstyled()"
+/>
+} @case ('date') {
+<p-datepicker
+    [pt]="ptm('pcFilterDatePicker')"
+    [ariaLabel]="ariaLabel"
+    [placeholder]="placeholder"
+    [ngModel]="filterConstraint?.value"
+    [ngModelOptions]="{ standalone: true }"
+    (ngModelChange)="onModelChange($event)"
+    appendTo="body"
+    [unstyled]="unstyled()"
+></p-datepicker>
+} } }

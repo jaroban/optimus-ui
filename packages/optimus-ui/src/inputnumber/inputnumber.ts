@@ -76,145 +76,7 @@ export const INPUTNUMBER_VALUE_ACCESSOR: any = {
     selector: 'p-inputNumber, p-inputnumber, p-input-number',
     standalone: true,
     imports: [CommonModule, InputText, AutoFocus, TimesIcon, AngleUpIcon, AngleDownIcon, SharedModule, BindModule],
-    template: `
-        <input
-            pInputText
-            #input
-            [attr.id]="inputId"
-            role="spinbutton"
-            [class]="cn(cx('pcInputText'), inputStyleClass)"
-            [value]="formattedValue()"
-            [ngStyle]="inputStyle"
-            [variant]="$variant()"
-            [invalid]="invalid()"
-            [attr.aria-valuemin]="min()"
-            [attr.aria-valuemax]="max()"
-            [attr.aria-valuenow]="value"
-            [attr.placeholder]="placeholder"
-            [attr.aria-label]="ariaLabel"
-            [attr.aria-labelledby]="ariaLabelledBy"
-            [attr.aria-describedby]="ariaDescribedBy"
-            [attr.title]="title"
-            [pSize]="size()"
-            [attr.size]="inputSize()"
-            [attr.name]="name()"
-            [attr.autocomplete]="autocomplete"
-            [attr.maxlength]="maxlength()"
-            [attr.minlength]="minlength()"
-            [attr.tabindex]="tabindex"
-            [attr.aria-required]="ariaRequired"
-            [attr.min]="min()"
-            [attr.max]="max()"
-            [attr.step]="step() ?? 1"
-            [attr.required]="required() ? '' : undefined"
-            [attr.readonly]="readonly ? '' : undefined"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            inputmode="decimal"
-            (input)="onUserInput($event)"
-            (keydown)="onInputKeyDown($event)"
-            (keypress)="onInputKeyPress($event)"
-            (paste)="onPaste($event)"
-            (click)="onInputClick()"
-            (focus)="onInputFocus($event)"
-            (blur)="onInputBlur($event)"
-            [pt]="ptm('pcInputText')"
-            [unstyled]="unstyled()"
-            [pAutoFocus]="autofocus"
-            [fluid]="hasFluid"
-            [attr.data-p]="dataP"
-        />
-        <ng-container *ngIf="buttonLayout != 'vertical' && showClear && value">
-            <svg data-p-icon="times" *ngIf="!clearIconTemplate && !_clearIconTemplate" [pBind]="ptm('clearIcon')" [class]="cx('clearIcon')" (click)="clear()" />
-            <span *ngIf="clearIconTemplate || _clearIconTemplate" [pBind]="ptm('clearIcon')" (click)="clear()" [class]="cx('clearIcon')">
-                <ng-template *ngTemplateOutlet="clearIconTemplate || _clearIconTemplate"></ng-template>
-            </span>
-        </ng-container>
-        <span [pBind]="ptm('buttonGroup')" [class]="cx('buttonGroup')" *ngIf="showButtons && buttonLayout === 'stacked'" [attr.data-p]="dataP">
-            <button
-                type="button"
-                [pBind]="ptm('incrementButton')"
-                [class]="cn(cx('incrementButton'), incrementButtonClass)"
-                [attr.disabled]="$disabled() ? '' : undefined"
-                tabindex="-1"
-                (mousedown)="onUpButtonMouseDown($event)"
-                (mouseup)="onUpButtonMouseUp()"
-                (mouseleave)="onUpButtonMouseLeave()"
-                (keydown)="onUpButtonKeyDown($event)"
-                (keyup)="onUpButtonKeyUp()"
-                [attr.aria-hidden]="true"
-                [attr.data-p]="dataP"
-            >
-                <span *ngIf="incrementButtonIcon" [pBind]="ptm('incrementButtonIcon')" [ngClass]="incrementButtonIcon"></span>
-                <ng-container *ngIf="!incrementButtonIcon">
-                    <svg data-p-icon="angle-up" [pBind]="ptm('incrementButtonIcon')" *ngIf="!incrementButtonIconTemplate && !_incrementButtonIconTemplate" />
-                    <ng-template *ngTemplateOutlet="incrementButtonIconTemplate || _incrementButtonIconTemplate"></ng-template>
-                </ng-container>
-            </button>
-
-            <button
-                type="button"
-                [pBind]="ptm('decrementButton')"
-                [class]="cn(cx('decrementButton'), decrementButtonClass)"
-                [attr.disabled]="$disabled() ? '' : undefined"
-                tabindex="-1"
-                [attr.aria-hidden]="true"
-                (mousedown)="onDownButtonMouseDown($event)"
-                (mouseup)="onDownButtonMouseUp()"
-                (mouseleave)="onDownButtonMouseLeave()"
-                (keydown)="onDownButtonKeyDown($event)"
-                (keyup)="onDownButtonKeyUp()"
-                [attr.data-p]="dataP"
-            >
-                <span *ngIf="decrementButtonIcon" [pBind]="ptm('decrementButtonIcon')" [ngClass]="decrementButtonIcon"></span>
-                <ng-container *ngIf="!decrementButtonIcon">
-                    <svg data-p-icon="angle-down" [pBind]="ptm('decrementButtonIcon')" *ngIf="!decrementButtonIconTemplate && !_decrementButtonIconTemplate" />
-                    <ng-template *ngTemplateOutlet="decrementButtonIconTemplate || _decrementButtonIconTemplate"></ng-template>
-                </ng-container>
-            </button>
-        </span>
-        <button
-            *ngIf="showButtons && buttonLayout !== 'stacked'"
-            type="button"
-            [pBind]="ptm('incrementButton')"
-            [class]="cn(cx('incrementButton'), incrementButtonClass)"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            tabindex="-1"
-            [attr.aria-hidden]="true"
-            (mousedown)="onUpButtonMouseDown($event)"
-            (mouseup)="onUpButtonMouseUp()"
-            (mouseleave)="onUpButtonMouseLeave()"
-            (keydown)="onUpButtonKeyDown($event)"
-            (keyup)="onUpButtonKeyUp()"
-            [attr.data-p]="dataP"
-        >
-            <span *ngIf="incrementButtonIcon" [pBind]="ptm('incrementButtonIcon')" [ngClass]="incrementButtonIcon"></span>
-            <ng-container *ngIf="!incrementButtonIcon">
-                <svg data-p-icon="angle-up" [pBind]="ptm('incrementButtonIcon')" *ngIf="!incrementButtonIconTemplate && !_incrementButtonIconTemplate" />
-                <ng-template *ngTemplateOutlet="incrementButtonIconTemplate || _incrementButtonIconTemplate"></ng-template>
-            </ng-container>
-        </button>
-        <button
-            *ngIf="showButtons && buttonLayout !== 'stacked'"
-            type="button"
-            [pBind]="ptm('decrementButton')"
-            [class]="cn(cx('decrementButton'), decrementButtonClass)"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            tabindex="-1"
-            [attr.aria-hidden]="true"
-            (mousedown)="onDownButtonMouseDown($event)"
-            (mouseup)="onDownButtonMouseUp()"
-            (mouseleave)="onDownButtonMouseLeave()"
-            (keydown)="onDownButtonKeyDown($event)"
-            (keyup)="onDownButtonKeyUp()"
-            [attr.data-p]="dataP"
-        >
-            <span *ngIf="decrementButtonIcon" [pBind]="ptm('decrementButtonIcon')" [ngClass]="decrementButtonIcon"></span>
-            <ng-container *ngIf="!decrementButtonIcon">
-                <svg data-p-icon="angle-down" [pBind]="ptm('decrementButtonIcon')" *ngIf="!decrementButtonIconTemplate && !_decrementButtonIconTemplate" />
-                <ng-template *ngTemplateOutlet="decrementButtonIconTemplate || _decrementButtonIconTemplate"></ng-template>
-            </ng-container>
-        </button>
-    `,
+    templateUrl: './inputnumber.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [INPUTNUMBER_VALUE_ACCESSOR, InputNumberStyle, { provide: INPUTNUMBER_INSTANCE, useExisting: InputNumber }, { provide: PARENT_INSTANCE, useExisting: InputNumber }],
     encapsulation: ViewEncapsulation.None,
@@ -837,6 +699,19 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
             return;
         }
 
+        let data = this.input.nativeElement.value;
+        if (data) {
+            if (this.inputId === 'integeronly') {
+                data = data.replace(/[^\d-]/g, '');
+            }
+
+            if (this.maxlength()) {
+                data = data.substring(0, this.maxlength()!);
+            }
+
+            this.input.nativeElement.value = data;
+        }
+
         if (this.isSpecialChar) {
             (event.target as HTMLInputElement).value = this.lastValue as string;
         }
@@ -1051,26 +926,6 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
 
         if ((48 <= code && code <= 57) || isMinusSign || isDecimalSign) {
             this.insert(event, char, { isDecimalSign, isMinusSign });
-        }
-    }
-
-    onPaste(event: ClipboardEvent) {
-        if (!this.$disabled() && !this.readonly) {
-            event.preventDefault();
-            let data = (event.clipboardData || (this.document as any).defaultView['clipboardData']).getData('Text');
-            if (this.inputId === 'integeronly' && /[^\d-]/.test(data)) {
-                return;
-            }
-            if (data) {
-                if (this.maxlength()) {
-                    data = data.toString().substring(0, this.maxlength());
-                }
-
-                let filteredData = this.parseValue(data);
-                if (filteredData != null) {
-                    this.insert(event, filteredData.toString());
-                }
-            }
         }
     }
 
