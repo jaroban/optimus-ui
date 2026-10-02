@@ -1,0 +1,59 @@
+@for (processedOption of options; track processedOption; let i = $index) {
+<li
+    [class]="cx('option', { processedOption })"
+    role="treeitem"
+    [attr.aria-level]="level + 1"
+    [attr.aria-setsize]="options.length"
+    [pBind]="getPTOptions(processedOption, i, 'option')"
+    [id]="getOptionId(processedOption)"
+    [attr.aria-label]="getOptionLabelToRender(processedOption)"
+    [attr.aria-selected]="isOptionGroup(processedOption) ? undefined : isOptionSelected(processedOption)"
+    [attr.aria-posinset]="i + 1"
+>
+    <div
+        [class]="cx('optionContent')"
+        (click)="onOptionClick($event, processedOption)"
+        (mouseenter)="onOptionMouseEnter($event, processedOption)"
+        (mousemove)="onOptionMouseMove($event, processedOption)"
+        pRipple
+        [pBind]="getPTOptions(processedOption, i, 'optionContent')"
+    >
+        @if (optionTemplate) {
+        <ng-container *ngTemplateOutlet="optionTemplate; context: { $implicit: processedOption?.option, level: level }"></ng-container>
+        } @else {
+        <span [class]="cx('optionText')" [pBind]="getPTOptions(processedOption, i, 'optionText')">{{ getOptionLabelToRender(processedOption) }}</span>
+        } @if (isOptionGroup(processedOption)) {
+        <span [class]="cx('groupIcon')" [pBind]="getPTOptions(processedOption, i, 'groupIcon')">
+            @if (!groupicon) {
+            <svg data-p-icon="angle-right" [pBind]="getPTOptions(processedOption, index, 'groupIcon')"></svg>
+            }
+            <ng-template *ngTemplateOutlet="groupicon"></ng-template>
+        </span>
+        }
+    </div>
+    @if (isOptionGroup(processedOption) && isOptionActive(processedOption)) {
+    <ul
+        pCascadeSelectSub
+        [attr.role]="'group'"
+        [class]="cx('optionList')"
+        [selectId]="selectId"
+        [focusedOptionId]="focusedOptionId"
+        [activeOptionPath]="activeOptionPath"
+        [options]="getOptionGroupChildren(processedOption)"
+        [optionLabel]="optionLabel"
+        [optionValue]="optionValue"
+        [level]="level + 1"
+        (onChange)="onChange.emit($event)"
+        (onFocusChange)="onFocusChange.emit($event)"
+        (onFocusEnterChange)="onFocusEnterChange.emit($event)"
+        [optionGroupLabel]="optionGroupLabel"
+        [optionGroupChildren]="optionGroupChildren"
+        [dirty]="dirty"
+        [optionTemplate]="optionTemplate"
+        [pBind]="ptm('optionList')"
+        [pt]="pt"
+        [unstyled]="unstyled()"
+    ></ul>
+    }
+</li>
+}

@@ -45,31 +45,7 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
     selector: 'p-selectButton, p-selectbutton, p-select-button',
     standalone: true,
     imports: [ToggleButton, FormsModule, CommonModule, SharedModule, BindModule],
-    template: `
-        @for (option of options; track getOptionLabel(option); let i = $index) {
-            <p-togglebutton
-                [autofocus]="autofocus"
-                [styleClass]="styleClass"
-                [ngModel]="isSelected(option)"
-                [ngModelOptions]="{ standalone: true }"
-                [onLabel]="this.getOptionLabel(option)"
-                [offLabel]="this.getOptionLabel(option)"
-                [disabled]="$disabled() || isOptionDisabled(option)"
-                (onChange)="onOptionSelect($event, option, i)"
-                [allowEmpty]="getAllowEmpty()"
-                [size]="size()"
-                [fluid]="fluid()"
-                [pt]="ptm('pcToggleButton')"
-                [unstyled]="unstyled()"
-            >
-                @if (itemTemplate || _itemTemplate) {
-                    <ng-template #content>
-                        <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: option, index: i }"></ng-container>
-                    </ng-template>
-                }
-            </p-togglebutton>
-        }
-    `,
+    templateUrl: './selectbutton.html',
     providers: [SELECTBUTTON_VALUE_ACCESSOR, SelectButtonStyle, { provide: SELECTBUTTON_INSTANCE, useExisting: SelectButton }, { provide: PARENT_INSTANCE, useExisting: SelectButton }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
