@@ -1,0 +1,13 @@
+<ol [class]="cx('labelList')" [pBind]="ptm('labelList')" [attr.data-p]="dataP">
+    @for (labelItem of value; track parentInstance.trackByFn(index); let index = $index) {
+    <li [class]="cx('label')" [pBind]="ptm('label')">
+        @if (!iconTemplate) { @if (labelItem.icon) {
+        <i [class]="labelItem.icon" [ngClass]="cx('labelIcon')" [pBind]="ptm('labelIcon')" [ngStyle]="{ color: labelItem.color }"></i>
+        } @if (!labelItem.icon) {
+        <span [class]="cx('labelMarker')" [pBind]="ptm('labelMarker')" [ngStyle]="{ backgroundColor: labelItem.color }"></span>
+        } }
+        <ng-container *ngTemplateOutlet="iconTemplate; context: { $implicit: labelItem, icon: labelItem.icon }"></ng-container>
+        <span [class]="cx('labelText')" [pBind]="ptm('labelText')">{{ labelItem.label }} ({{ parentInstance.percentValue(labelItem.value) }})</span>
+    </li>
+    }
+</ol>

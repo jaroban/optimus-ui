@@ -75,7 +75,7 @@ export interface StepPanelContentTemplateContext {
 @Component({
     selector: 'p-step-list',
     standalone: true,
-    imports: [CommonModule, BindModule],
+    imports: [BindModule],
     template: ` <ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
@@ -108,7 +108,7 @@ export class StepList extends BaseComponent<StepListPassThrough> {
 @Component({
     selector: 'p-stepper-separator',
     standalone: true,
-    imports: [CommonModule, BindModule],
+    imports: [BindModule],
     template: ` <ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
@@ -139,7 +139,7 @@ export class StepperSeparator extends BaseComponent<StepperSeparatorPassThrough>
 @Component({
     selector: 'p-step-item',
     standalone: true,
-    imports: [CommonModule, BindModule],
+    imports: [BindModule],
     template: ` <ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
@@ -198,24 +198,7 @@ export class StepItem extends BaseComponent<StepItemPassThrough> {
     selector: 'p-step',
     standalone: true,
     imports: [CommonModule, StepperSeparator, SharedModule, BindModule],
-    template: `
-        @if (!content && !_contentTemplate) {
-            <button [attr.id]="id()" [class]="cx('header')" [pBind]="ptm('header')" [tabindex]="isStepDisabled() ? -1 : undefined" [attr.aria-controls]="ariaControls()" [disabled]="isStepDisabled()" (click)="onStepClick()" type="button">
-                <span [class]="cx('number')" [pBind]="ptm('number')">{{ value() }}</span>
-                <span [class]="cx('title')" [pBind]="ptm('title')">
-                    <ng-content></ng-content>
-                </span>
-            </button>
-            @if (isSeparatorVisible()) {
-                <p-stepper-separator />
-            }
-        } @else {
-            <ng-container *ngTemplateOutlet="content || _contentTemplate; context: { activateCallback: onStepClick.bind(this), value: value(), active: active() }"></ng-container>
-            @if (isSeparatorVisible()) {
-                <p-stepper-separator />
-            }
-        }
-    `,
+    templateUrl: './step.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
@@ -313,18 +296,7 @@ export class Step extends BaseComponent<StepPassThrough> {
     selector: 'p-step-panel',
     standalone: true,
     imports: [CommonModule, StepperSeparator, SharedModule, BindModule, MotionModule],
-    template: `
-        <p-motion [visible]="active()" name="p-collapsible" [disabled]="!isVertical()" [options]="computedMotionOptions()">
-            <div [class]="cx('contentWrapper')" [pBind]="ptm('contentWrapper')">
-                @if (isSeparatorVisible()) {
-                    <p-stepper-separator />
-                }
-                <div [class]="cx('content')" [pBind]="ptm('content')">
-                    <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { activateCallback: updateValue.bind(this), value: value(), active: active() }"></ng-container>
-                </div>
-            </div>
-        </p-motion>
-    `,
+    templateUrl: './steppanel.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
@@ -416,7 +388,7 @@ export class StepPanel extends BaseComponent<StepPanelPassThrough> {
 @Component({
     selector: 'p-step-panels',
     standalone: true,
-    imports: [CommonModule, SharedModule, BindModule],
+    imports: [SharedModule, BindModule],
     template: ` <ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
@@ -447,7 +419,7 @@ export class StepPanels extends BaseComponent<StepPanelsPassThrough> {
 @Component({
     selector: 'p-stepper',
     standalone: true,
-    imports: [CommonModule, SharedModule, BindModule],
+    imports: [SharedModule, BindModule],
     template: ` <ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,

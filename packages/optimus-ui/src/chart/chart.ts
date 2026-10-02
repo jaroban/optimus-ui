@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { booleanAttribute, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, inject, InjectionToken, Input, NgModule, NgZone, Output, ViewEncapsulation } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { SharedModule } from '@openng/optimus-ui/api';
@@ -16,18 +16,8 @@ const CHART_INSTANCE = new InjectionToken<UIChart>('CHART_INSTANCE');
 @Component({
     selector: 'p-chart',
     standalone: true,
-    imports: [CommonModule, SharedModule, BindModule],
-    template: `
-        <canvas
-            role="img"
-            [attr.aria-label]="ariaLabel"
-            [attr.aria-labelledby]="ariaLabelledBy"
-            [attr.width]="responsive && !width ? null : width"
-            [attr.height]="responsive && !height ? null : height"
-            (click)="onCanvasClick($event)"
-            [pBind]="ptm('canvas')"
-        ></canvas>
-    `,
+    imports: [SharedModule, BindModule],
+    templateUrl: './uichart.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {

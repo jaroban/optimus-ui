@@ -48,51 +48,7 @@ const SCROLLER_INSTANCE = new InjectionToken<Scroller>('SCROLLER_INSTANCE');
     selector: 'p-scroller, p-virtualscroller, p-virtual-scroller, p-virtualScroller',
     imports: [CommonModule, SpinnerIcon, SharedModule, Bind],
     standalone: true,
-    template: `
-        <ng-container *ngIf="!_disabled; else disabledContainer">
-            <div #element [attr.id]="_id" [attr.tabindex]="tabindex" [ngStyle]="_style" [class]="cn(cx('root'), styleClass)" (scroll)="onContainerScroll($event)" [pBind]="ptm('root')">
-                <ng-container *ngIf="contentTemplate || _contentTemplate; else buildInContent">
-                    <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: loadedItems, options: getContentOptions() }"></ng-container>
-                </ng-container>
-                <ng-template #buildInContent>
-                    <div #content [class]="cn(cx('content'), contentStyleClass)" [style]="contentStyle" [pBind]="ptm('content')">
-                        <ng-container *ngFor="let item of loadedItems; let index = index; trackBy: _trackBy">
-                            <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: item, options: getOptions(index) }"></ng-container>
-                        </ng-container>
-                    </div>
-                </ng-template>
-                <div *ngIf="_showSpacer" [class]="cx('spacer')" [ngStyle]="spacerStyle" [pBind]="ptm('spacer')"></div>
-                <div *ngIf="!loaderDisabled && _showLoader && d_loading" [class]="cx('loader')" [pBind]="ptm('loader')">
-                    <ng-container *ngIf="loaderTemplate || _loaderTemplate; else buildInLoader">
-                        <ng-container *ngFor="let item of loaderArr; let index = index">
-                            <ng-container
-                                *ngTemplateOutlet="
-                                    loaderTemplate || _loaderTemplate;
-                                    context: {
-                                        options: getLoaderOptions(index, both && { numCols: numItemsInViewport.cols })
-                                    }
-                                "
-                            ></ng-container>
-                        </ng-container>
-                    </ng-container>
-                    <ng-template #buildInLoader>
-                        <ng-container *ngIf="loaderIconTemplate || _loaderIconTemplate; else buildInLoaderIcon">
-                            <ng-container *ngTemplateOutlet="loaderIconTemplate || _loaderIconTemplate; context: { options: { styleClass: 'p-virtualscroller-loading-icon' } }"></ng-container>
-                        </ng-container>
-                        <ng-template #buildInLoaderIcon>
-                            <svg data-p-icon="spinner" [class]="cx('loadingIcon')" [spin]="true" [pBind]="ptm('loadingIcon')" />
-                        </ng-template>
-                    </ng-template>
-                </div>
-            </div>
-        </ng-container>
-        <ng-template #disabledContainer>
-            <ng-content></ng-content>
-            <ng-container *ngIf="contentTemplate || _contentTemplate">
-                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: items, options: { rows: _items, columns: loadedColumns } }"></ng-container>
-            </ng-container>
-        </ng-template>
-    `,
+    templateUrl: './scroller.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     encapsulation: ViewEncapsulation.None,
     providers: [ScrollerStyle, { provide: SCROLLER_INSTANCE, useExisting: Scroller }, { provide: PARENT_INSTANCE, useExisting: Scroller }],

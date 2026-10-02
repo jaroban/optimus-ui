@@ -17,16 +17,7 @@ const TAG_INSTANCE = new InjectionToken<Tag>('TAG_INSTANCE');
     selector: 'p-tag',
     standalone: true,
     imports: [CommonModule, SharedModule, Bind],
-    template: `
-        <ng-content></ng-content>
-        <ng-container *ngIf="!iconTemplate && !_iconTemplate">
-            <span [class]="cx('icon')" [ngClass]="icon" [pBind]="ptm('icon')" *ngIf="icon"></span>
-        </ng-container>
-        <span [class]="cx('icon')" [pBind]="ptm('icon')" *ngIf="iconTemplate || _iconTemplate">
-            <ng-template *ngTemplateOutlet="iconTemplate || _iconTemplate"></ng-template>
-        </span>
-        <span [class]="cx('label')" [pBind]="ptm('label')">{{ value }}</span>
-    `,
+    templateUrl: './tag.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [TagStyle, { provide: TAG_INSTANCE, useExisting: Tag }, { provide: PARENT_INSTANCE, useExisting: Tag }],

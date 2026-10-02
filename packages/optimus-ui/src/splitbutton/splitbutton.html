@@ -1,0 +1,92 @@
+@if (contentTemplate || _contentTemplate) {
+<button
+    [class]="cx('pcButton')"
+    type="button"
+    pButton
+    pRipple
+    [severity]="severity"
+    [text]="text"
+    [outlined]="outlined"
+    [size]="size"
+    [icon]="icon"
+    [iconPos]="iconPos"
+    (click)="onDefaultButtonClick($event)"
+    [disabled]="disabled"
+    [attr.tabindex]="tabindex"
+    [attr.aria-label]="buttonProps?.['ariaLabel'] || label"
+    [pAutoFocus]="autofocus"
+    [pTooltip]="tooltip"
+    [pTooltipUnstyled]="unstyled()"
+    [tooltipOptions]="tooltipOptions"
+    [pt]="ptm('pcButton')"
+    [unstyled]="unstyled()"
+>
+    <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+</button>
+} @else {
+<button
+    #defaultbtn
+    [class]="cx('pcButton')"
+    type="button"
+    pButton
+    pRipple
+    [severity]="severity"
+    [text]="text"
+    [outlined]="outlined"
+    [size]="size"
+    [icon]="icon"
+    [iconPos]="iconPos"
+    [label]="label"
+    (click)="onDefaultButtonClick($event)"
+    [disabled]="buttonDisabled"
+    [attr.tabindex]="tabindex"
+    [attr.aria-label]="buttonProps?.['ariaLabel']"
+    [pAutoFocus]="autofocus"
+    [pTooltip]="tooltip"
+    [pTooltipUnstyled]="unstyled()"
+    [tooltipOptions]="tooltipOptions"
+    [pt]="ptm('pcButton')"
+    [unstyled]="unstyled()"
+></button>
+}
+<button
+    type="button"
+    pButton
+    pRipple
+    [size]="size"
+    [severity]="severity"
+    [text]="text"
+    [outlined]="outlined"
+    [class]="cx('pcDropdown')"
+    (click)="onDropdownButtonClick($event)"
+    (keydown)="onDropdownButtonKeydown($event)"
+    [disabled]="menuButtonDisabled"
+    [attr.aria-label]="menuButtonProps?.['ariaLabel'] || expandAriaLabel"
+    [attr.aria-haspopup]="menuButtonProps?.['ariaHasPopup'] || true"
+    [attr.aria-expanded]="menuButtonProps?.['ariaExpanded'] || isExpanded()"
+    [attr.aria-controls]="menuButtonProps?.['ariaControls'] || ariaId"
+    [pt]="ptm('pcDropdown')"
+    [unstyled]="unstyled()"
+>
+    @if (dropdownIcon) {
+    <span [class]="dropdownIcon"></span>
+    } @if (!dropdownIcon) { @if (!dropdownIconTemplate && !_dropdownIconTemplate) {
+    <svg data-p-icon="chevron-down"></svg>
+    }
+    <ng-template *ngTemplateOutlet="dropdownIconTemplate || _dropdownIconTemplate"></ng-template>
+    }
+</button>
+<p-tieredmenu
+    [id]="ariaId"
+    #menu
+    [popup]="true"
+    [model]="model"
+    [style]="menuStyle"
+    [styleClass]="menuStyleClass"
+    [appendTo]="$appendTo()"
+    [motionOptions]="computedMotionOptions()"
+    (onHide)="onHide()"
+    (onShow)="onShow()"
+    [pt]="ptm('pcMenu')"
+    [unstyled]="unstyled()"
+></p-tieredmenu>

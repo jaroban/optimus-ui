@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, afterRenderEffect, Component, computed, effect, inject, InjectionToken, input, output, signal, untracked } from '@angular/core';
 import { type ClassNameOptions, createMotion, resolveDuration, type MotionEvent, type MotionInstance, type MotionOptions, type MotionPhase } from '@openng/optimus-ui-motion';
 import { nextFrame } from '@openng/optimus-ui-utils';
@@ -18,12 +17,8 @@ const MOTION_INSTANCE = new InjectionToken<Motion>('MOTION_INSTANCE');
     changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'p-motion',
     standalone: true,
-    imports: [CommonModule, BindModule],
-    template: `
-        @if (rendered()) {
-            <ng-content />
-        }
-    `,
+    imports: [BindModule],
+    templateUrl: './motion.html',
     providers: [MotionStyle, { provide: MOTION_INSTANCE, useExisting: Motion }, { provide: PARENT_INSTANCE, useExisting: Motion }],
     host: {
         '[class]': "cx('root')"

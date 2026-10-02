@@ -693,49 +693,7 @@ export const INPUTMASK_VALUE_ACCESSOR: any = {
     selector: 'p-inputmask, p-inputMask, p-input-mask',
     standalone: true,
     imports: [CommonModule, InputText, AutoFocus, TimesIcon, SharedModule, BindModule],
-    template: `
-        <input
-            #input
-            pInputText
-            [pt]="ptm('pcInputText', ptmParams())"
-            [unstyled]="unstyled()"
-            [attr.id]="inputId"
-            [attr.type]="type"
-            [attr.name]="name()"
-            [invalid]="invalid()"
-            [class]="styleClass"
-            [ngStyle]="style"
-            [attr.placeholder]="placeholder"
-            [attr.title]="title"
-            [pSize]="size()"
-            [attr.size]="inputSize()"
-            [attr.autocomplete]="autocomplete"
-            [attr.maxlength]="maxlength()"
-            [attr.minlength]="minlength()"
-            [attr.tabindex]="tabindex"
-            [attr.aria-label]="ariaLabel"
-            [attr.aria-labelledBy]="ariaLabelledBy"
-            [attr.aria-required]="ariaRequired"
-            [attr.required]="required() ? '' : undefined"
-            [attr.readonly]="readonly ? '' : undefined"
-            [attr.disabled]="$disabled() ? '' : undefined"
-            (focus)="onInputFocus($event)"
-            (blur)="onInputBlur($event)"
-            (keydown)="onInputKeydown($event)"
-            (keypress)="onKeyPress($event)"
-            [variant]="$variant()"
-            [pAutoFocus]="autofocus"
-            (input)="onInputChange($event)"
-            (paste)="handleInputChange($event)"
-            [fluid]="hasFluid"
-        />
-        <ng-container *ngIf="value != null && $filled() && showClear && !$disabled()">
-            <svg data-p-icon="times" *ngIf="!clearIconTemplate && !_clearIconTemplate" [class]="cx('clearIcon')" [pBind]="ptm('clearIcon')" (click)="clear()" />
-            <span *ngIf="clearIconTemplate || _clearIconTemplate" [class]="cx('clearIcon')" [pBind]="ptm('clearIcon')" (click)="clear()">
-                <ng-template *ngTemplateOutlet="clearIconTemplate || _clearIconTemplate"></ng-template>
-            </span>
-        </ng-container>
-    `,
+    templateUrl: './inputmask.html',
     providers: [INPUTMASK_VALUE_ACCESSOR, InputMaskStyle, { provide: INPUTMASK_INSTANCE, useExisting: InputMask }, { provide: PARENT_INSTANCE, useExisting: InputMask }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
