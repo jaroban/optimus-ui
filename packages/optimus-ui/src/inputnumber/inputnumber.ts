@@ -433,22 +433,18 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
     }
     getDecimalChar(): string {
         const formatter = new Intl.NumberFormat(this.locale, { ...this.getOptions(), useGrouping: false });
-        return formatter
-            .format(1.1)
-            .replace(this._currency as RegExp | string, '')
-            .trim()
-            .replace(this._numeral, '');
+        return formatter.formatToParts(1.1).filter((part) => part.type === 'decimal')[0].value;
     }
 
     getGroupingExpression(): RegExp {
         const formatter = new Intl.NumberFormat(this.locale, { useGrouping: true });
-        this.groupChar = formatter.format(1000000).trim().replace(this._numeral, '').charAt(0);
+        this.groupChar = formatter.formatToParts(1000000).filter((part) => part.type === 'group')[0].value;
         return new RegExp(`[${this.groupChar}]`, 'g');
     }
 
     getMinusSignExpression(): RegExp {
         const formatter = new Intl.NumberFormat(this.locale, { useGrouping: false });
-        return new RegExp(`[${formatter.format(-1).trim().replace(this._numeral, '')}]`, 'g');
+        return new RegExp(`[${formatter.formatToParts(-1).filter((part) => part.type === 'minusSign')[0].value}]`, 'g');
     }
 
     getCurrencyExpression(): RegExp {
@@ -460,7 +456,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0
             });
-            return new RegExp(`[${formatter.format(1).replace(/\s/g, '').replace(this._numeral, '').replace(this._group, '')}]`, 'g');
+            return new RegExp(`[${formatter.formatToParts(1).filter((part) => part.type === 'currency')[0].value}]`, 'g');
         }
 
         return new RegExp(`[]`, 'g');
@@ -835,15 +831,17 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
                 break;
 
             case 'Home':
-                if (this.min()) {
-                    this.updateModel(event, this.min());
+                let min = this.min();
+                if (min) {
+                    this.updateModel(event, { value: min, text: '' });
                     event.preventDefault();
                 }
                 break;
 
             case 'End':
-                if (this.max()) {
-                    this.updateModel(event, this.max());
+                let max = this.max();
+                if (max) {
+                    this.updateModel(event, { value: max, text: '' });
                     event.preventDefault();
                 }
                 break;
