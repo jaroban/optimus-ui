@@ -7,7 +7,7 @@ import { provideOptimus } from '@openng/optimus-ui/config';
 import type { InputNumberInputEvent } from '@openng/optimus-ui/types/inputnumber';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
-import { InputNumber, InputNumberDataAdapter, InputNumberModule } from './inputnumber';
+import { InputNumber, INPUTNUMBER_DATA_ADAPTER_BIGINT, InputNumberModule } from './inputnumber';
 
 // Test Components
 @Component({
@@ -189,17 +189,7 @@ class TestInputNumberRefTemplateComponent {
 class TestInputNumberDataAdapterComponent {
     value: bigint | null = null;
 
-    bigIntDataAdapter: InputNumberDataAdapter<bigint> = {
-        fromString: (value: string) => {
-            try {
-                return BigInt(value);
-            } catch {
-                return null;
-            }
-        },
-        toString: (value: bigint | null) => (value != null ? value.toString() : ''),
-        isLessThan: (value: bigint, other: bigint) => value < other
-    };
+    bigIntDataAdapter = INPUTNUMBER_DATA_ADAPTER_BIGINT;
 }
 
 describe('InputNumber', () => {

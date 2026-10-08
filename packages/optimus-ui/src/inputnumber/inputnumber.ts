@@ -631,10 +631,9 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
         let step = this.step() ?? 1;
         step = dir > 0 ? step : -step;
         let currentValue = this.parseValue({ text: this.input?.nativeElement.value, value: null });
-        let newValue = this.dataAdapter.add(currentValue.value ?? 0, step);
-        let ir = this.validateValue({ text: '', value: newValue });
+        let newValue = this.validateValue({ text: '', value: this.dataAdapter.add(currentValue.value ?? 0, step) });
         const max = this.maxlength();
-        if (max && max < this.formatValue(ir).text.length) {
+        if (max && max < this.formatValue(newValue).text.length) {
             return;
         }
 
