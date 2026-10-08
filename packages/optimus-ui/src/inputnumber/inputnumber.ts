@@ -34,6 +34,36 @@ import { Nullable } from '@openng/optimus-ui/ts-helpers';
 import type { InputNumberInputEvent, InputNumberPassThrough } from '@openng/optimus-ui/types/inputnumber';
 import { InputNumberStyle } from './style/inputnumberstyle';
 
+export interface InputNumberDataAdapter<T> {
+    fromString: (value: string) => T | null;
+    toString: (value: T | null) => string;
+    isLessThan: (value: T, other: T) => boolean;
+    add: (value: T, step: T) => T;
+}
+
+export const INPUTNUMBER_DATA_ADAPTER_NUMBER: InputNumberDataAdapter<number> = {
+    fromString: (value: string) => {
+        const parsedValue = parseFloat(value);
+        return isNaN(parsedValue) ? null : parsedValue;
+    },
+    toString: (value: number | null) => (value != null ? value.toString() : ''),
+    isLessThan: (value: number, other: number) => value < other,
+    add: (value: number, step: number) => value + step
+};
+
+export const INPUTNUMBER_DATA_ADAPTER_BIGINT: InputNumberDataAdapter<bigint> = {
+    fromString: (value: string) => {
+        try {
+            return BigInt(value);
+        } catch {
+            return null;
+        }
+    },
+    toString: (value: bigint | null) => (value != null ? value.toString() : ''),
+    isLessThan: (value: bigint, other: bigint) => value < other,
+    add: (value: bigint, step: bigint) => value + step
+};
+
 const INPUTNUMBER_INSTANCE = new InjectionToken<InputNumber>('INPUTNUMBER_INSTANCE');
 
 export const INPUTNUMBER_VALUE_ACCESSOR: any = {
@@ -45,7 +75,7 @@ export const INPUTNUMBER_VALUE_ACCESSOR: any = {
 interface InternalRepresentation {
     text: string;
     justNumber?: string;
-    value: number | null;
+    value: number | bigint | null;
 }
 
 /**
@@ -246,6 +276,11 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
      */
     @Input({ transform: booleanAttribute }) autofocus: boolean | undefined;
     /**
+     * Custom data adapter for parsing and formatting the input value.
+     * @group Props
+     */
+    @Input() dataAdapter: InputNumberDataAdapter<any> = INPUTNUMBER_DATA_ADAPTER_NUMBER;
+    /**
      * Callback to invoke on input.
      * @param {InputNumberInputEvent} event - Custom input event.
      * @group Emits
@@ -302,7 +337,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
 
     _decrementButtonIconTemplate: TemplateRef<void> | undefined;
 
-    value: Nullable<number>;
+    value: Nullable<number | bigint>;
 
     focused: Nullable<boolean>;
 
@@ -516,7 +551,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
         }
 
         if (ir.value !== null) {
-            ir.justNumber = ir.value.toString();
+            ir.justNumber = this.dataAdapter.toString(ir.value);
 
             if (this.format) {
                 let options = this.getOptions();
@@ -573,12 +608,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
             })
             .join('');
         ir.justNumber = justNumber;
-        if (justNumber) {
-            let parsedValue = +justNumber;
-            ir.value = isNaN(parsedValue) ? null : parsedValue;
-        } else {
-            ir.value = null;
-        }
+        ir.value = this.dataAdapter.fromString(justNumber);
         return ir;
     }
 
@@ -597,10 +627,11 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
         this.spin(event, dir);
     }
 
-    spin(event: Event, dir: number) {
-        let step = (this.step() ?? 1) * dir;
+    spin(event: Event, dir: number | bigint) {
+        let step = this.step() ?? 1;
+        step = dir > 0 ? step : -step;
         let currentValue = this.parseValue({ text: this.input?.nativeElement.value, value: null });
-        let newValue = this.validateValue({ text: '', value: (currentValue.value ?? 0) + step });
+        let newValue = this.validateValue({ text: '', value: this.dataAdapter.add(currentValue.value ?? 0, step) });
         const max = this.maxlength();
         if (max && max < this.formatValue(newValue).text.length) {
             return;
@@ -1161,13 +1192,13 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
 
     validateValue(ir: InternalRepresentation): InternalRepresentation {
         const min = this.min();
-        if (min != null && (ir.value as number) < min) {
+        if (min != null && this.dataAdapter.isLessThan(ir.value, min)) {
             ir.value = min;
             return ir;
         }
 
         const max = this.max();
-        if (max != null && (ir.value as number) > max) {
+        if (max != null && this.dataAdapter.isLessThan(max, ir.value)) {
             ir.value = max;
             return ir;
         }
@@ -1287,7 +1318,7 @@ export class InputNumber extends BaseInput<InputNumberPassThrough> {
     }
 
     formattedValue() {
-        const ir = { value: !this.value && !this.allowEmpty ? 0 : (this.value ?? null), text: '' };
+        const ir: InternalRepresentation = { value: !this.value && !this.allowEmpty ? 0 : (this.value ?? null), text: '' };
         return this.formatValue(ir).text;
     }
 

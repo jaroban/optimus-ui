@@ -7,7 +7,7 @@ import { provideOptimus } from '@openng/optimus-ui/config';
 import type { InputNumberInputEvent } from '@openng/optimus-ui/types/inputnumber';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
-import { InputNumber, InputNumberModule } from './inputnumber';
+import { InputNumber, INPUTNUMBER_DATA_ADAPTER_BIGINT, InputNumberModule } from './inputnumber';
 
 // Test Components
 @Component({
@@ -181,6 +181,17 @@ class TestInputNumberRefTemplateComponent {
     step: number = 0.01;
 }
 
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false,
+    template: `<p-inputNumber [(ngModel)]="value" [readonly]="false" [disabled]="false" [format]="false" [dataAdapter]="bigIntDataAdapter"></p-inputNumber>`
+})
+class TestInputNumberDataAdapterComponent {
+    value: bigint | null = null;
+
+    bigIntDataAdapter = INPUTNUMBER_DATA_ADAPTER_BIGINT;
+}
+
 describe('InputNumber', () => {
     let component: InputNumber;
     let fixture: ComponentFixture<InputNumber>;
@@ -188,7 +199,7 @@ describe('InputNumber', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [InputNumberModule, FormsModule, ReactiveFormsModule, CommonModule],
-            declarations: [TestBasicInputNumberComponent, TestFormInputNumberComponent, TestInputNumberPTemplateComponent, TestInputNumberRefTemplateComponent],
+            declarations: [TestBasicInputNumberComponent, TestFormInputNumberComponent, TestInputNumberPTemplateComponent, TestInputNumberRefTemplateComponent, TestInputNumberDataAdapterComponent],
             providers: [provideZonelessChangeDetection()]
         }).compileComponents();
 
@@ -292,6 +303,34 @@ describe('InputNumber', () => {
 
             const formatted = component.formatValue({ value: 1234567, text: '' });
             expect(formatted.text).toContain('1,234,567'); // Should have thousand separators
+        });
+    });
+
+    describe('Data adapter tests', () => {
+        it('should handle bigints value -> input', async () => {
+            const testFixture = TestBed.createComponent(TestInputNumberDataAdapterComponent);
+            const testComponent = testFixture.componentInstance as TestInputNumberDataAdapterComponent;
+            testComponent.value = 1045435657657878795845364325n;
+            testFixture.changeDetectorRef.markForCheck();
+            await testFixture.whenStable();
+
+            const inputNumberInstance = testFixture.debugElement.query(By.css('p-inputNumber')).componentInstance as InputNumber;
+
+            const formatted = inputNumberInstance.formattedValue();
+            expect(formatted).toContain('1.0454356576578788e+27'); // Should contain the number
+        });
+
+        it('should handle bigints input -> value', async () => {
+            const testFixture = TestBed.createComponent(TestInputNumberDataAdapterComponent);
+            const testComponent = testFixture.componentInstance as TestInputNumberDataAdapterComponent;
+
+            const testInputElement = testFixture.debugElement.query(By.css('input')).nativeElement;
+            await userEvent.fill(testInputElement, '1045435657657878795845364325');
+            await userEvent.tab();
+            testFixture.changeDetectorRef.markForCheck();
+            await testFixture.whenStable();
+
+            expect(testComponent.value).toBe(1045435657657878795845364325n);
         });
     });
 

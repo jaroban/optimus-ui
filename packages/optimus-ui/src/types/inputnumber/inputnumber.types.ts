@@ -69,7 +69,7 @@ export interface InputNumberInputEvent {
     /**
      * Input value.
      */
-    value: number | null;
+    value: number | bigint | null;
     /**
      * Formatted value.
      */
