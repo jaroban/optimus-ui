@@ -255,8 +255,8 @@ describe('InputNumber', () => {
             component.maxFractionDigits = 2;
             fixture.detectChanges();
 
-            const formatted = component.formatValue(1234.567);
-            expect(formatted).toContain('1,234.57'); // May vary based on locale
+            const formatted = component.formatValue({ value: 1234.567, text: '' });
+            expect(formatted.text).toContain('1,234.57'); // May vary based on locale
         });
 
         it('should format currency correctly', () => {
@@ -265,8 +265,8 @@ describe('InputNumber', () => {
             component.locale = 'en-US';
             fixture.detectChanges();
 
-            const formatted = component.formatValue(1234.56);
-            expect(formatted).toBeTruthy(); // Should return a formatted value
+            const formatted = component.formatValue({ value: 1234.56, text: '' });
+            expect(formatted.text).toBeTruthy(); // Should return a formatted value
         });
 
         it('should handle prefix and suffix', () => {
@@ -291,9 +291,9 @@ describe('InputNumber', () => {
             const inputNumberInstance = testFixture.debugElement.query(By.css('p-inputNumber')).componentInstance;
 
             // Test validation behavior
-            expect(inputNumberInstance.validateValue(5)).toBe(10); // Should clamp to min
-            expect(inputNumberInstance.validateValue(150)).toBe(100); // Should clamp to max
-            expect(inputNumberInstance.validateValue(50)).toBe(50); // Should stay unchanged
+            expect(inputNumberInstance.validateValue({ value: 5 }).value).toBe(10); // Should clamp to min
+            expect(inputNumberInstance.validateValue({ value: 150 }).value).toBe(100); // Should clamp to max
+            expect(inputNumberInstance.validateValue({ value: 50 }).value).toBe(50); // Should stay unchanged
         });
 
         it('should handle fraction digits correctly', () => {
@@ -302,8 +302,8 @@ describe('InputNumber', () => {
             component.value = 123.1;
             fixture.detectChanges();
 
-            const formatted = component.formatValue(123.1);
-            expect(formatted).toContain('123'); // Should contain the number
+            const formatted = component.formatValue({ value: 123.1, text: '' });
+            expect(formatted.text).toContain('123'); // Should contain the number
         });
 
         it('should handle grouping separators', () => {
@@ -311,8 +311,8 @@ describe('InputNumber', () => {
             component.value = 1234567;
             fixture.detectChanges();
 
-            const formatted = component.formatValue(1234567);
-            expect(formatted).toContain('1,234,567'); // Should have thousand separators
+            const formatted = component.formatValue({ value: 1234567, text: '' });
+            expect(formatted.text).toContain('1,234,567'); // Should have thousand separators
         });
     });
 
@@ -395,23 +395,18 @@ describe('InputNumber', () => {
             expect(testComponent.value).toBe(_initialValue);
         });
 
-        /*
-        // test doesn't work
         it('should handle paste events', async () => {
             await userEvent.click(inputElement);
-            await userEvent.fill(inputElement, '123');
+            await userEvent.fill(inputElement, '123.45');
             await userEvent.dblClick(inputElement);
             await userEvent.cut();
-            await userEvent.fill(inputElement, '456');
-            await userEvent.click(inputElement);
             await userEvent.paste();
-
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
-            expect(testComponent.value).toBe(123456);
+            expect(testComponent.value).toBe(123.45);
+            // Don't flush to avoid timer overflow
         });
-        */
 
         it('should handle focus events', async () => {
             vi.spyOn(testComponent, 'onFocusChange').mockImplementation(() => {});
@@ -990,7 +985,7 @@ describe('InputNumber', () => {
             await testFixture.whenStable();
 
             expect(() => {
-                const _formatted = component.formatValue(1234.56);
+                const _formatted = component.formatValue({ value: 1234.56, text: '' });
             }).not.toThrow();
         });
 
@@ -1065,7 +1060,7 @@ describe('InputNumber', () => {
             await testFixture.whenStable();
 
             expect(() => {
-                const _formatted = component.formatValue(1234.56);
+                const _formatted = component.formatValue({ value: 1234.56, text: '' });
             }).not.toThrow();
         });
     });

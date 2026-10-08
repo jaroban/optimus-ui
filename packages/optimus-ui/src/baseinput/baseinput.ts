@@ -53,7 +53,7 @@ export class BaseInput<PT = any> extends BaseEditableHolder<PT> {
      * @defaultValue undefined
      * @group Props
      */
-    step = input<number | null | undefined>();
+    step = input<number | bigint | null | undefined>();
     /**
      * The number of characters (code points) must not be less than the value of the attribute, if non-empty.
      * @defaultValue undefined
