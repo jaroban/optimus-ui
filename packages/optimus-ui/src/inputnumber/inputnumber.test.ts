@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component, provideZonelessChangeDetection } fr
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-
 import { provideOptimus } from '@openng/optimus-ui/config';
 import type { InputNumberInputEvent } from '@openng/optimus-ui/types/inputnumber';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { userEvent } from 'vitest/browser';
 import { InputNumber, InputNumberModule } from './inputnumber';
 
 // Test Components
@@ -227,16 +228,15 @@ describe('InputNumber', () => {
     });
 
     describe('Number Validation and Formatting', () => {
-        // TODO: Feature works, test will be debugged.
-        // it('should format numbers correctly in decimal mode', () => {
-        //     component.value = 1234.567;
-        //     component.mode = 'decimal';
-        //     component.maxFractionDigits = 2;
-        //     fixture.detectChanges();
+        it('should format numbers correctly in decimal mode', () => {
+            component.value = 1234.567;
+            component.mode = 'decimal';
+            component.maxFractionDigits = 2;
+            fixture.detectChanges();
 
-        //     const formatted = component.formatValue(1234.567);
-        //     expect(formatted).toContain('1,234.57'); // May vary based on locale
-        // });
+            const formatted = component.formatValue({ value: 1234.567, text: '' });
+            expect(formatted.text).toContain('1,234.57'); // May vary based on locale
+        });
 
         it('should format currency correctly', () => {
             component.mode = 'currency';
@@ -244,8 +244,8 @@ describe('InputNumber', () => {
             component.locale = 'en-US';
             fixture.detectChanges();
 
-            const formatted = component.formatValue(1234.56);
-            expect(formatted).toBeTruthy(); // Should return a formatted value
+            const formatted = component.formatValue({ value: 1234.56, text: '' });
+            expect(formatted.text).toBeTruthy(); // Should return a formatted value
         });
 
         it('should handle prefix and suffix', () => {
@@ -270,9 +270,9 @@ describe('InputNumber', () => {
             const inputNumberInstance = testFixture.debugElement.query(By.css('p-inputNumber')).componentInstance;
 
             // Test validation behavior
-            expect(inputNumberInstance.validateValue(5)).toBe(10); // Should clamp to min
-            expect(inputNumberInstance.validateValue(150)).toBe(100); // Should clamp to max
-            expect(inputNumberInstance.validateValue(50)).toBe(50); // Should stay unchanged
+            expect(inputNumberInstance.validateValue({ value: 5 }).value).toBe(10); // Should clamp to min
+            expect(inputNumberInstance.validateValue({ value: 150 }).value).toBe(100); // Should clamp to max
+            expect(inputNumberInstance.validateValue({ value: 50 }).value).toBe(50); // Should stay unchanged
         });
 
         it('should handle fraction digits correctly', () => {
@@ -281,19 +281,18 @@ describe('InputNumber', () => {
             component.value = 123.1;
             fixture.detectChanges();
 
-            const formatted = component.formatValue(123.1);
-            expect(formatted).toContain('123'); // Should contain the number
+            const formatted = component.formatValue({ value: 123.1, text: '' });
+            expect(formatted.text).toContain('123'); // Should contain the number
         });
 
-        // TODO: Feature works, test will be debugged.
-        // it('should handle grouping separators', () => {
-        //     component.useGrouping = true;
-        //     component.value = 1234567;
-        //     fixture.detectChanges();
+        it('should handle grouping separators', () => {
+            component.useGrouping = true;
+            component.value = 1234567;
+            fixture.detectChanges();
 
-        //     const formatted = component.formatValue(1234567);
-        //     expect(formatted).toContain('1,234,567'); // Should have thousand separators
-        // });
+            const formatted = component.formatValue({ value: 1234567, text: '' });
+            expect(formatted.text).toContain('1,234,567'); // Should have thousand separators
+        });
     });
 
     describe('User Input Handling', () => {
@@ -311,8 +310,7 @@ describe('InputNumber', () => {
         it('should handle valid numeric input', async () => {
             testFixture.detectChanges();
 
-            inputElement.value = '123.45';
-            inputElement.dispatchEvent(new Event('input'));
+            await userEvent.fill(inputElement, '123.45');
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -326,8 +324,7 @@ describe('InputNumber', () => {
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
-            inputElement.value = 'abc';
-            inputElement.dispatchEvent(new Event('input'));
+            await userEvent.fill(inputElement, 'abc');
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -349,22 +346,23 @@ describe('InputNumber', () => {
             expect(testComponent.value).toBe(_initialValue);
         });
 
-        // TODO: Feature works, test will be debugged.
-        // it('should handle paste events', fakeAsync(() => {
-        //     const pasteEvent = new Event('paste') as any;
-        //     pasteEvent.clipboardData = { getData: () => '123.45' };
+        it('should handle paste events', async () => {
+            await userEvent.click(inputElement);
+            await userEvent.fill(inputElement, '123.45');
+            await userEvent.dblClick(inputElement);
+            await userEvent.cut();
+            await userEvent.paste();
+            testFixture.changeDetectorRef.markForCheck();
+            await testFixture.whenStable();
 
-        //     inputElement.dispatchEvent(pasteEvent);
-        //     tick();
-
-        //     expect(testComponent.value).toBe(123.45);
-        //     // Don't flush to avoid timer overflow
-        // }));
+            expect(testComponent.value).toBe(123.45);
+            // Don't flush to avoid timer overflow
+        });
 
         it('should handle focus events', async () => {
             vi.spyOn(testComponent, 'onFocusChange').mockImplementation(() => {});
 
-            inputElement.dispatchEvent(new Event('focus'));
+            await userEvent.click(inputElement);
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -374,7 +372,8 @@ describe('InputNumber', () => {
         it('should handle blur events', async () => {
             vi.spyOn(testComponent, 'onBlurChange').mockImplementation(() => {});
 
-            inputElement.dispatchEvent(new Event('blur'));
+            await userEvent.click(inputElement);
+            await userEvent.tab();
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -399,8 +398,8 @@ describe('InputNumber', () => {
         it('should increment value on Arrow Up', async () => {
             const _initialValue = testComponent.value || 0;
 
-            const keyEvent = new KeyboardEvent('keydown', { key: 'ArrowUp' });
-            inputElement.dispatchEvent(keyEvent);
+            await userEvent.click(inputElement);
+            await userEvent.keyboard('{ArrowUp}');
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -411,8 +410,8 @@ describe('InputNumber', () => {
         });
 
         it('should decrement value on Arrow Down', async () => {
-            const keyEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
-            inputElement.dispatchEvent(keyEvent);
+            await userEvent.click(inputElement);
+            await userEvent.keyboard('{ArrowDown}');
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -423,8 +422,8 @@ describe('InputNumber', () => {
         it('should handle Enter key', async () => {
             vi.spyOn(testComponent, 'onKeyDownChange').mockImplementation(() => {});
 
-            const keyEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-            inputElement.dispatchEvent(keyEvent);
+            await userEvent.click(inputElement);
+            await userEvent.keyboard('{Enter}');
             testFixture.changeDetectorRef.markForCheck();
             await testFixture.whenStable();
 
@@ -937,7 +936,7 @@ describe('InputNumber', () => {
             await testFixture.whenStable();
 
             expect(() => {
-                const _formatted = component.formatValue(1234.56);
+                const _formatted = component.formatValue({ value: 1234.56, text: '' });
             }).not.toThrow();
         });
 
@@ -1012,7 +1011,7 @@ describe('InputNumber', () => {
             await testFixture.whenStable();
 
             expect(() => {
-                const _formatted = component.formatValue(1234.56);
+                const _formatted = component.formatValue({ value: 1234.56, text: '' });
             }).not.toThrow();
         });
     });
