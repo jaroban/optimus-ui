@@ -3447,6 +3447,10 @@ export class TreeTableCellEditor extends BaseComponent {
 
     @ContentChildren(PrimeTemplate) templates: Nullable<QueryList<PrimeTemplate>>;
 
+    @ContentChild('input') _inputTemplate: Nullable<TemplateRef<any>>;
+
+    @ContentChild('output') _outputTemplate: Nullable<TemplateRef<any>>;
+
     inputTemplate: Nullable<TemplateRef<any>>;
 
     outputTemplate: Nullable<TemplateRef<any>>;
